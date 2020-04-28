@@ -42,6 +42,7 @@ const sum = (list, prop) => list.reduce((acc, item) => acc + item[prop], 0);
 
 export default function Sidebar({ locations = [] }) {
   const classes = useStyles();
+  const totalCosts =  sum(locations, "orders");
   const totalPreventive = sum(locations, "preventive");
   const totalEngineering = sum(locations, "engineering");
   const totalCorrective = sum(locations, "corrective");
@@ -64,7 +65,7 @@ export default function Sidebar({ locations = [] }) {
       </div>
       <Grid item md={12} container justify="center">
         <DataBox text="Ubicaciones" number={locations.length} />
-        <DataBox text="Mantenimientos" number={locations.length} />
+        <DataBox text="Mantenimientos" number={totalCosts} />
       </Grid>
       <Grid item md={12} container justify="center">
         <Grid item md={4}>
@@ -136,7 +137,7 @@ export default function Sidebar({ locations = [] }) {
               equipments,
               materials,
               services,
-              intersectionId,
+              intersectionID,
               engineering,
             },
             index
@@ -146,9 +147,9 @@ export default function Sidebar({ locations = [] }) {
                 primary={
                   <>
                     <Typography align="left" variant="caption">
-                      {intersectionId}
+                      {intersectionID}
                     </Typography>
-                    <Typography align="left" variant="body1">
+                    <Typography align="left" variant="body2">
                       {mainStreet}
                     </Typography>
                   </>
@@ -168,21 +169,21 @@ export default function Sidebar({ locations = [] }) {
                     <Typography
                       className={classes.preventive}
                       align="center"
-                      variant="body1"
+                      variant="body2"
                     >
                       {formatToUnits(preventive)}
                     </Typography>
                     <Typography
                       className={classes.engineering}
                       align="center"
-                      variant="body1"
+                      variant="body2"
                     >
                       {formatToUnits(engineering)}
                     </Typography>
                     <Typography
                       className={classes.corrective}
                       align="center"
-                      variant="body1"
+                      variant="body2"
                     >
                       {formatToUnits(corrective)}
                     </Typography>
@@ -199,21 +200,21 @@ export default function Sidebar({ locations = [] }) {
                     <Typography
                       className={classes.equipment}
                       align="center"
-                      variant="body1"
+                      variant="body2"
                     >
                       {formatToUnits(equipments)}
                     </Typography>
                     <Typography
                       className={classes.materials}
                       align="center"
-                      variant="body1"
+                      variant="body2"
                     >
                       {formatToUnits(materials)}
                     </Typography>
                     <Typography
                       className={classes.preventive}
                       align="center"
-                      variant="body1"
+                      variant="body2"
                     >
                       {formatToUnits(services)}
                     </Typography>

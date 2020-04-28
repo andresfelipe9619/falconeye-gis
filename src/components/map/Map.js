@@ -59,17 +59,19 @@ export default function Map() {
           />
           {maintenances.map((maintenance) => {
             const {
-              intersectionId,
+              intersectionID,
               corrective,
               preventive,
               equipments,
               materials,
               services,
               orders,
+              reliability,
               engineering,
               mainStreet,
               secondStreet,
-              coordinates,
+              latitude,
+              longitude,
             } = maintenance;
             const primaryCosts = [
               {
@@ -106,24 +108,30 @@ export default function Map() {
               },
             ];
             const markerCoordinates = [
-              coordinates.latitude,
-              coordinates.longitude,
+              latitude,
+              longitude,
             ];
+            const totalCosts = secondaryCosts.reduce((acc, cost) => acc + cost.value, 0)
             return (
-              <Marker position={markerCoordinates} icon={markerIcon()}>
+              <Marker key={intersectionID} position={markerCoordinates} icon={markerIcon()}>
                 <Popup>
                   <Typography align="left" variant="caption">
-                    {intersectionId}
+                    {intersectionID}
                   </Typography>
-                  <Typography variant={"h5"}>{mainStreet}</Typography>
+                  <Typography gutterBottom variant={"h5"}>{mainStreet}</Typography>
+                  <Typography variant={"h5"}>{secondStreet}</Typography>
                   <hr />
-                  <Typography variant={"body2"}>{secondStreet}</Typography>
+                  <Typography variant={"body2"}>Fiabilidad: {reliability}</Typography>
                   <hr />
                   <Typography variant={"body2"}>Órdenes: {orders}</Typography>
                   <hr />
                   <CostsList costs={primaryCosts} />
                   <hr />
                   <CostsList costs={secondaryCosts} />
+                  <hr />
+                  <Typography align="center" variant={"body2"}>
+                    Total: {formatToUnits(totalCosts)}
+                  </Typography>
                 </Popup>
               </Marker>
             );
@@ -138,10 +146,10 @@ export default function Map() {
             </Typography>
           </div>
         ) : (
-          <Sidebar
-            locations={maintenances}
-          />
-        )}
+            <Sidebar
+              locations={maintenances}
+            />
+          )}
       </Grid>
     </Grid>
   );
@@ -150,7 +158,7 @@ export default function Map() {
 const CostsList = ({ costs = [] }) => (
   <Grid item md={12} container spacing={0} direction="column">
     {costs.map(({ label, value, className }) => (
-      <Typography component="span" className={className} variant={"body2"}>
+      <Typography key={label} component="span" className={className} variant={"body2"}>
         {label}: {formatToUnits(value)}
       </Typography>
     ))}
