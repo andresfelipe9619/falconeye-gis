@@ -13,7 +13,7 @@ const BOUNDS = new L.LatLngBounds(
   new L.LatLng(18.40593, -70.018579),
   new L.LatLng(18.550654, -69.874751)
 );
-const VISCOSITY = 0.1;
+const VISCOSITY = 0.5;
 const MAX_ZOOM_MAP = 18;
 const INITIAL_ZOOM = 13;
 const MAP_OPTIONS = {
@@ -121,9 +121,9 @@ export default function Map() {
                   <Typography gutterBottom variant={"h5"}>{mainStreet}</Typography>
                   <Typography variant={"h5"}>{secondStreet}</Typography>
                   <hr />
-                  <Typography variant={"body2"}>Fiabilidad: {reliability}</Typography>
+                  <Typography variant={"body2"}>Fiabilidad: {reliability || 0}</Typography>
                   <hr />
-                  <Typography variant={"body2"}>Órdenes: {orders}</Typography>
+                  <Typography variant={"body2"}>Órdenes: {orders || 0}</Typography>
                   <hr />
                   <CostsList costs={primaryCosts} />
                   <hr />
@@ -158,9 +158,18 @@ export default function Map() {
 const CostsList = ({ costs = [] }) => (
   <Grid item md={12} container spacing={0} direction="column">
     {costs.map(({ label, value, className }) => (
-      <Typography key={label} component="span" className={className} variant={"body2"}>
-        {label}: {formatToUnits(value)}
-      </Typography>
+      <Grid key={label} item md={12} container>
+        <Grid key={label} item md={4} container>
+          <Typography component="span" className={className} variant={"body2"}>
+            {label}:
+          </Typography>
+        </Grid>
+        <Grid key={label} item md={8} container justify="flex-end">
+          <Typography component="span" className={className} variant={"body2"}>
+            {formatToUnits(value)}
+          </Typography>
+        </Grid>
+      </Grid>
     ))}
   </Grid>
 );
