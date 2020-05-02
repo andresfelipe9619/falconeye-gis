@@ -1,6 +1,6 @@
 export const formatToUnits = (number) => {
  var totalStr = '';
- var numStr = String(number);
+ var numStr = String(Number(number).toFixed(2));
  var parts = numStr.split( '.' );
  var numLen = parts[0].length;
  for ( var i = 0; i < numLen; i++ ) {
