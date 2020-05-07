@@ -1,20 +1,20 @@
-import React from "react";
+import React, { memo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import Box from "@material-ui/core/Box";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 import FalconEye from "./falconeye.png";
-import { Grid, Typography, Divider } from "@material-ui/core";
+import { Grid, Typography, Divider, LinearProgress } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import DataBox from "../data-box/DataBox";
-import { formatToUnits } from "../../utils";
 
 const drawerWidth = 420;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    padding: 10,
+    padding: 5,
     width: drawerWidth,
     flexShrink: 0,
   },
@@ -24,10 +24,15 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    overflowY: "hidden",
   },
   logo: {
     height: "auto",
     width: 120,
+  },
+  list: {
+    overflowY: "auto",
+    overflowX: "hidden",
   },
   leftBox: { borderRight: [[2, "dashed", theme.palette.divider]] },
   toolbar: { textAlign: "center", background: "white" },
@@ -38,18 +43,23 @@ const useStyles = makeStyles((theme) => ({
   corrective: { color: theme.palette.error.main },
 }));
 
-const sum = (list, prop) => list.reduce((acc, item) => acc + item[prop], 0);
-
-export default function Sidebar({ locations = [] }) {
+export default function Sidebar({
+  checked,
+  loading,
+  maintenancesData,
+  handleChangeSwitch,
+}) {
   const classes = useStyles();
-  const totalCosts =  sum(locations, "orders");
-  const totalPreventive = sum(locations, "preventive");
-  const totalEngineering = sum(locations, "engineering");
-  const totalCorrective = sum(locations, "corrective");
-  const totalMaterials = sum(locations, "materials");
-  const totalServices = sum(locations, "services");
-  const totalEquipments = sum(locations, "equipments");
-
+  const {
+    totalCosts,
+    maintenances = [],
+    totalServices,
+    totalMaterials,
+    totalEquipments,
+    totalCorrective,
+    totalPreventive,
+    totalEngineering,
+  } = maintenancesData;
   return (
     <Drawer
       elevation={10}
@@ -63,168 +73,190 @@ export default function Sidebar({ locations = [] }) {
       <div className={classes.toolbar}>
         <img src={FalconEye} className={classes.logo} alt="Falconeye logo" />
       </div>
+      <Grid item md={12} container justify="flex-end">
+        <FormControlLabel
+          control={
+            <Switch
+              name="monetary-range"
+              checked={checked}
+              color="primary"
+              onChange={handleChangeSwitch}
+            />
+          }
+          label="Rango Monetario"
+        />
+      </Grid>
+
       <Grid item md={12} container justify="center">
-        <DataBox text="Ubicaciones" number={locations.length} />
+        <DataBox text="Ubicaciones" number={maintenances.length} />
         <DataBox text="Mantenimientos" number={totalCosts} />
       </Grid>
-      <Grid item md={12} container justify="center">
-        <Grid item md={4}>
+      <br />
+      <Grid item md={12} container spacing={4}>
+        <Grid
+          item
+          md={6}
+          container
+          direction="column"
+          className={classes.leftBox}
+        >
           <DataBox
             small
             currency
-            text="Preventivos"
-            number={totalPreventive}
-            className={classes.preventive}
+            text="Correctivos"
+            className={checked ? undefined : classes.corrective}
+            number={totalCorrective}
           />
-        </Grid>
-        <Grid item md={4}>
           <DataBox
             small
             currency
             text="Ingeniería"
             number={totalEngineering}
-            className={classes.engineering}
+            className={checked ? undefined : classes.engineering}
           />
-        </Grid>
-        <Grid item md={4}>
           <DataBox
             small
             currency
-            className={classes.corrective}
-            text="Correctivos"
-            number={totalCorrective}
+            text="Preventivos"
+            number={totalPreventive}
+            className={checked ? undefined : classes.preventive}
           />
         </Grid>
-      </Grid>
-      <Grid item md={12} container justify="center">
-        <Grid item md={4}>
+        <Grid item md={6} container direction="column">
           <DataBox
             small
             currency
-            text="Equipo"
+            text="Equipos"
             number={totalEquipments}
-            className={classes.equipment}
+            className={checked ? undefined : classes.equipment}
           />
-        </Grid>
-        <Grid item md={4}>
           <DataBox
             small
             currency
             text="Materiales"
             number={totalMaterials}
-            className={classes.materials}
+            className={checked ? undefined : classes.materials}
           />
-        </Grid>
-        <Grid item md={4}>
           <DataBox
             small
             currency
-            className={classes.preventive}
+            className={checked ? undefined : classes.preventive}
             text="Servicios"
             number={totalServices}
           />
         </Grid>
       </Grid>
+      <br />
+      {loading && <LinearProgress />}
       <Divider variant="middle" />
-      <List className={classes.list}>
-        {locations.map(
-          (
-            {
-              mainStreet,
-              secondStreet,
-              corrective,
-              preventive,
-              equipments,
-              materials,
-              services,
-              intersectionID,
-              engineering,
-            },
-            index
-          ) => (
-            <ListItem divider button key={index}>
-              <ListItemText
-                primary={
-                  <>
-                    <Typography align="left" variant="caption">
-                      {intersectionID}
-                    </Typography>
-                    <Typography align="left" variant="body2">
-                      {mainStreet}
-                    </Typography>
-                  </>
-                }
-                secondary={secondStreet}
-              />
-              <Grid item md={8} container justify="center">
-                <Grid item md={6}>
-                  <Box
-                    m={0}
-                    p={0}
-                    className={classes.leftBox}
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Typography
-                      className={classes.preventive}
-                      align="center"
-                      variant="body2"
-                    >
-                      {formatToUnits(preventive)}
-                    </Typography>
-                    <Typography
-                      className={classes.engineering}
-                      align="center"
-                      variant="body2"
-                    >
-                      {formatToUnits(engineering)}
-                    </Typography>
-                    <Typography
-                      className={classes.corrective}
-                      align="center"
-                      variant="body2"
-                    >
-                      {formatToUnits(corrective)}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item md={6}>
-                  <Box
-                    m={0}
-                    p={0}
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Typography
-                      className={classes.equipment}
-                      align="center"
-                      variant="body2"
-                    >
-                      {formatToUnits(equipments)}
-                    </Typography>
-                    <Typography
-                      className={classes.materials}
-                      align="center"
-                      variant="body2"
-                    >
-                      {formatToUnits(materials)}
-                    </Typography>
-                    <Typography
-                      className={classes.preventive}
-                      align="center"
-                      variant="body2"
-                    >
-                      {formatToUnits(services)}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-            </ListItem>
-          )
-        )}
-      </List>
+      {!!maintenances.length && (
+        <LocationsList {...{ classes, maintenances, checked }} />
+      )}
     </Drawer>
   );
 }
+
+function LocationsListComponent({ classes, maintenances, checked }) {
+  return (
+    <List classes={{ root: classes.list }}>
+      {maintenances.map(
+        (
+          {
+            mainStreet,
+            secondStreet,
+            corrective,
+            preventive,
+            equipments,
+            materials,
+            services,
+            intersectionID,
+            engineering,
+          },
+          index
+        ) => (
+          <ListItem dense divider button key={index}>
+            <Grid container spacing={2}>
+              <Grid item container md={4}>
+                <ListItemText
+                  primary={
+                    <>
+                      <Typography align="left" variant="caption">
+                        {intersectionID}
+                      </Typography>
+                      <Typography align="left" variant="body2">
+                        {mainStreet}
+                      </Typography>
+                    </>
+                  }
+                  secondary={secondStreet}
+                />
+              </Grid>
+              <Grid
+                item
+                md={4}
+                container
+                justify="center"
+                className={classes.leftBox}
+                direction="column"
+              >
+                <DataBox
+                  small
+                  currency
+                  shortLabel
+                  text="C"
+                  className={checked ? undefined : classes.corrective}
+                  number={corrective}
+                />
+
+                <DataBox
+                  small
+                  currency
+                  shortLabel
+                  text="I"
+                  className={checked ? undefined : classes.engineering}
+                  number={engineering}
+                />
+                <DataBox
+                  small
+                  currency
+                  shortLabel
+                  text="P"
+                  className={checked ? undefined : classes.preventive}
+                  number={preventive}
+                />
+              </Grid>
+              <Grid item md={4} justify="center" container direction="column">
+                <DataBox
+                  small
+                  currency
+                  shortLabel
+                  text="E"
+                  className={checked ? undefined : classes.equipment}
+                  number={equipments}
+                />
+                <DataBox
+                  small
+                  currency
+                  shortLabel
+                  text="M"
+                  className={checked ? undefined : classes.materials}
+                  number={materials}
+                />
+                <DataBox
+                  small
+                  currency
+                  shortLabel
+                  text="S"
+                  className={checked ? undefined : classes.preventive}
+                  number={services}
+                />
+              </Grid>
+            </Grid>
+          </ListItem>
+        )
+      )}
+    </List>
+  );
+}
+
+const LocationsList = memo(LocationsListComponent);
