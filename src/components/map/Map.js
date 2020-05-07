@@ -60,7 +60,7 @@ export default function Map() {
 
   const isLoadingMap = loadingMonetaryRange || loading;
   const { ranges, minCost, maxCost, maintenances } = maintenancesData;
-  console.log("ranges", { ranges,  maxCost, minCost });
+  console.log("ranges", { ranges, maxCost, minCost });
   return (
     <Grid container spacing={0}>
       <Grid item md={9}>
@@ -197,9 +197,9 @@ const MaintenancesMarkers = ({
           <hr />
           <Typography variant={"body2"}>Órdenes: {orders || 0}</Typography>
           <hr />
-          <CostsList costs={primaryCosts} />
+          <CostsList checked={monetaryRange} costs={primaryCosts} />
           <hr />
-          <CostsList costs={secondaryCosts} />
+          <CostsList checked={monetaryRange} costs={secondaryCosts} />
           <hr />
           <Typography align="center" variant={"body2"}>
             Total: {formatToUnits(totalCosts)}
@@ -209,17 +209,25 @@ const MaintenancesMarkers = ({
     );
   });
 
-const CostsList = ({ costs = [] }) => (
+const CostsList = ({ costs = [], checked }) => (
   <Grid item md={12} container spacing={0} direction="column">
     {costs.map(({ label, value, className }) => (
       <Grid key={label} item md={12} container>
         <Grid item sm={1} md={4} container>
-          <Typography component="span" className={className} variant={"body2"}>
+          <Typography
+            component="span"
+            className={checked ? undefined : className}
+            variant={"body2"}
+          >
             {label}:
           </Typography>
         </Grid>
         <Grid item sm={11} md={8} container justify="flex-end">
-          <Typography component="span" className={className} variant={"body2"}>
+          <Typography
+            component="span"
+            className={checked ? undefined : className}
+            variant={"body2"}
+          >
             {formatToUnits(value)}
           </Typography>
         </Grid>
