@@ -1,14 +1,17 @@
-import React, { memo, useState } from "react";
+import React, { memo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import FormControl from "@material-ui/core/FormControl";
 import FalconEye from "./falconeye.png";
 import { Grid, Typography, Divider, LinearProgress } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import DataBox from "../data-box/DataBox";
+import clsx from "clsx";
 
 const drawerWidth = 420;
 
@@ -30,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     height: "auto",
     width: 120,
   },
+  radio: {
+    fontSize: 12,
+  },
   list: {
     overflowY: "auto",
     overflowX: "hidden",
@@ -44,14 +50,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Sidebar({
-  checked,
+  layer,
   loading,
+  ranges,
+  rangeColors,
   maintenancesData,
-  handleChangeSwitch,
+  handleChangeLayer,
 }) {
   const classes = useStyles();
   const {
-    totalCosts,
+    totalOrders,
     maintenances = [],
     totalServices,
     totalMaterials,
@@ -60,6 +68,7 @@ export default function Sidebar({
     totalPreventive,
     totalEngineering,
   } = maintenancesData;
+  const isDefault = layer === "default";
   return (
     <Drawer
       elevation={10}
@@ -74,22 +83,53 @@ export default function Sidebar({
         <img src={FalconEye} className={classes.logo} alt="Falconeye logo" />
       </div>
       <Grid item md={12} container justify="flex-end">
-        <FormControlLabel
-          control={
-            <Switch
-              name="monetary-range"
-              checked={checked}
-              color="primary"
-              onChange={handleChangeSwitch}
+        <FormControl component="fieldset">
+          <RadioGroup
+            row
+            aria-label="layers"
+            name="layers"
+            value={layer}
+            onChange={handleChangeLayer}
+          >
+            <FormControlLabel
+              classes={{ root: classes.radio }}
+              value="monetary-range"
+              control={<Radio color="primary" />}
+              label="Rango Monetario"
             />
-          }
-          label="Rango Monetario"
-        />
+            <FormControlLabel
+              classes={{ root: classes.radio }}
+              value="orders-range"
+              control={<Radio color="primary" />}
+              label="Rango de Ordenes"
+            />
+            <FormControlLabel
+              classes={{ root: classes.radio }}
+              value="default"
+              control={<Radio color="primary" />}
+              label="Normal"
+            />
+          </RadioGroup>
+        </FormControl>
       </Grid>
+
+      {!isDefault && rangeColors && (
+        <>
+          <br />
+          <Grid item md={12} container spacing={8} justify="center">
+            {rangeColors.map((color, i) => (
+              <Grid item md={3}>
+                <div style={{ backgroundColor: color, height: 30 }} />
+                {ranges[i]}
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
 
       <Grid item md={12} container justify="center">
         <DataBox text="Ubicaciones" number={maintenances.length} />
-        <DataBox text="Mantenimientos" number={totalCosts} />
+        <DataBox text="Mantenimientos" number={totalOrders} />
       </Grid>
       <br />
       <Grid item md={12} container spacing={4}>
@@ -104,7 +144,7 @@ export default function Sidebar({
             small
             currency
             text="Correctivos"
-            className={checked ? undefined : classes.corrective}
+            className={clsx({ [classes.corrective]: isDefault })}
             number={totalCorrective}
           />
           <DataBox
@@ -112,14 +152,14 @@ export default function Sidebar({
             currency
             text="Ingeniería"
             number={totalEngineering}
-            className={checked ? undefined : classes.engineering}
+            className={clsx({ [classes.engineering]: isDefault })}
           />
           <DataBox
             small
             currency
             text="Preventivos"
             number={totalPreventive}
-            className={checked ? undefined : classes.preventive}
+            className={clsx({ [classes.preventive]: isDefault })}
           />
         </Grid>
         <Grid item md={6} container direction="column">
@@ -128,19 +168,19 @@ export default function Sidebar({
             currency
             text="Equipos"
             number={totalEquipments}
-            className={checked ? undefined : classes.equipment}
+            className={clsx({ [classes.equipment]: isDefault })}
           />
           <DataBox
             small
             currency
             text="Materiales"
             number={totalMaterials}
-            className={checked ? undefined : classes.materials}
+            className={clsx({ [classes.materials]: isDefault })}
           />
           <DataBox
             small
             currency
-            className={checked ? undefined : classes.preventive}
+            className={clsx({ [classes.preventive]: isDefault })}
             text="Servicios"
             number={totalServices}
           />
@@ -150,31 +190,28 @@ export default function Sidebar({
       {loading && <LinearProgress />}
       <Divider variant="middle" />
       {!!maintenances.length && (
-        <LocationsList {...{ classes, maintenances, checked }} />
+        <LocationsList {...{ classes, maintenances, isDefault }} />
       )}
     </Drawer>
   );
 }
 
-function LocationsListComponent({ classes, maintenances, checked }) {
+function LocationsListComponent({ classes, maintenances, isDefault }) {
   return (
     <List classes={{ root: classes.list }}>
       {maintenances.map(
-        (
-          {
-            mainStreet,
-            secondStreet,
-            corrective,
-            preventive,
-            equipments,
-            materials,
-            services,
-            intersectionID,
-            engineering,
-          },
-          index
-        ) => (
-          <ListItem dense divider button key={index}>
+        ({
+          mainStreet,
+          secondStreet,
+          corrective,
+          preventive,
+          equipments,
+          materials,
+          services,
+          intersectionID,
+          engineering,
+        }) => (
+          <ListItem dense divider button key={intersectionID}>
             <Grid container spacing={2}>
               <Grid item container md={4}>
                 <ListItemText
@@ -204,7 +241,7 @@ function LocationsListComponent({ classes, maintenances, checked }) {
                   currency
                   shortLabel
                   text="C"
-                  className={checked ? undefined : classes.corrective}
+                  className={clsx({ [classes.corrective]: isDefault })}
                   number={corrective}
                 />
 
@@ -213,7 +250,7 @@ function LocationsListComponent({ classes, maintenances, checked }) {
                   currency
                   shortLabel
                   text="I"
-                  className={checked ? undefined : classes.engineering}
+                  className={clsx({ [classes.engineering]: isDefault })}
                   number={engineering}
                 />
                 <DataBox
@@ -221,7 +258,7 @@ function LocationsListComponent({ classes, maintenances, checked }) {
                   currency
                   shortLabel
                   text="P"
-                  className={checked ? undefined : classes.preventive}
+                  className={clsx({ [classes.preventive]: isDefault })}
                   number={preventive}
                 />
               </Grid>
@@ -231,7 +268,7 @@ function LocationsListComponent({ classes, maintenances, checked }) {
                   currency
                   shortLabel
                   text="E"
-                  className={checked ? undefined : classes.equipment}
+                  className={clsx({ [classes.equipment]: isDefault })}
                   number={equipments}
                 />
                 <DataBox
@@ -239,7 +276,7 @@ function LocationsListComponent({ classes, maintenances, checked }) {
                   currency
                   shortLabel
                   text="M"
-                  className={checked ? undefined : classes.materials}
+                  className={clsx({ [classes.materials]: isDefault })}
                   number={materials}
                 />
                 <DataBox
@@ -247,7 +284,7 @@ function LocationsListComponent({ classes, maintenances, checked }) {
                   currency
                   shortLabel
                   text="S"
-                  className={checked ? undefined : classes.preventive}
+                  className={clsx({ [classes.preventive]: isDefault })}
                   number={services}
                 />
               </Grid>

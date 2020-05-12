@@ -25,6 +25,8 @@ const MAP_OPTIONS = {
   maxBoundsViscosity: VISCOSITY,
 };
 
+const rangeColors = ["#22b14c", "#fef200", "#ff7f27", "#ed1d25"];
+
 const getMaintenancesData = async () => {
   let response = await fetch(`${API_URL}/maintenances`);
   let jsonData = await response.json();
@@ -35,8 +37,8 @@ export default function Map() {
   const classes = useStyles();
   const [maintenancesData, setMaintenancesData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [loadingMonetaryRange, setLoadingMonetaryRange] = useState(false);
-  const [monetaryRange, setMonetaryRange] = useState(false);
+  const [loadingLayer, setLoadingLayer] = useState(false);
+  const [layer, setLayer] = useState("default");
   useEffect(() => {
     (async () => {
       try {
@@ -51,16 +53,16 @@ export default function Map() {
     })();
   }, []);
 
-  const handleChangeSwitch = useCallback((event) => {
-    let value = event.target.checked;
-    setLoadingMonetaryRange(true);
-    setTimeout(() => setMonetaryRange(value), 1500);
-    setTimeout(() => setLoadingMonetaryRange(false), 2000);
+  const handleChangeLayer = useCallback((event) => {
+    let { value } = event.target;
+    setLoadingLayer(true);
+    setTimeout(() => setLayer(value), 1500);
+    setTimeout(() => setLoadingLayer(false), 2000);
   }, []);
 
-  const isLoadingMap = loadingMonetaryRange || loading;
-  const { ranges, minCost, maxCost, maintenances } = maintenancesData;
-  console.log("ranges", { ranges, maxCost, minCost });
+  const isLoadingMap = loadingLayer || loading;
+  const { ranges, maintenances, rangesOrder } = maintenancesData;
+
   return (
     <Grid container spacing={0}>
       <Grid item md={9}>
@@ -72,9 +74,10 @@ export default function Map() {
               url={TILE_LAYER}
             />
             <MaintenancesMarkers
+              layer={layer}
               ranges={ranges}
               classes={classes}
-              monetaryRange={monetaryRange}
+              rangesOrder={rangesOrder}
               maintenances={maintenances}
             />
           </LeafletMap>
@@ -89,10 +92,12 @@ export default function Map() {
           </div>
         ) : (
           <Sidebar
-            checked={!!monetaryRange}
-            loading={loadingMonetaryRange}
+            layer={layer}
+            ranges={ranges}
+            loading={loadingLayer}
+            rangeColors={rangeColors}
             maintenancesData={maintenancesData}
-            handleChangeSwitch={handleChangeSwitch}
+            handleChangeLayer={handleChangeLayer}
           />
         )}
       </Grid>
@@ -107,9 +112,10 @@ const between = (number) => (a, b) => {
 };
 
 const MaintenancesMarkers = ({
-  monetaryRange,
+  layer,
   ranges = [],
   classes,
+  rangesOrder = [],
   maintenances = [],
 }) =>
   maintenances.map((maintenance) => {
@@ -129,7 +135,6 @@ const MaintenancesMarkers = ({
       longitude,
       totalCosts,
     } = maintenance;
-    const rangeColors = ["blue", "green", "gold", "red"];
     const primaryCosts = [
       {
         label: "Preventivo",
@@ -165,17 +170,25 @@ const MaintenancesMarkers = ({
       },
     ];
     const markerCoordinates = [latitude, longitude];
-    const markerColor = !monetaryRange
-      ? undefined
-      : ranges.reduce((acc, rangeA, index) => {
-          let size = ranges.length;
-          if (size - index <= 1) return acc;
-          let rangeB = ranges[index + 1];
-          if (between(totalCosts)(rangeA, rangeB)) {
-            return rangeColors[index];
-          }
-          return acc;
-        }, "");
+    const isDefault = layer === "default";
+    const isMonetaryRange = layer === "monetary-range";
+    console.log("isDefault", { layer, isDefault });
+
+    let markerColor = undefined;
+    let layerRange = isMonetaryRange ? ranges : rangesOrder;
+    let layerProp = isMonetaryRange ? totalCosts : orders;
+    if (!isDefault) {
+      markerColor = layerRange.reduce((acc, rangeA, index) => {
+        let size = layerRange.length;
+        if (size - index <= 1) return acc;
+        let rangeB = layerRange[index + 1];
+        if (between(layerProp)(rangeA, rangeB)) {
+          return rangeColors[index];
+        }
+        return acc;
+      }, "");
+    }
+
     return (
       <Marker
         key={intersectionID}
@@ -197,9 +210,9 @@ const MaintenancesMarkers = ({
           <hr />
           <Typography variant={"body2"}>Órdenes: {orders || 0}</Typography>
           <hr />
-          <CostsList checked={monetaryRange} costs={primaryCosts} />
+          <CostsList checked={isDefault} costs={primaryCosts} />
           <hr />
-          <CostsList checked={monetaryRange} costs={secondaryCosts} />
+          <CostsList checked={isDefault} costs={secondaryCosts} />
           <hr />
           <Typography align="center" variant={"body2"}>
             Total: {formatToUnits(totalCosts)}
