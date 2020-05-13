@@ -11,6 +11,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import DataBox from "../data-box/DataBox";
+import { formatToUnits } from "../../utils";
 import clsx from "clsx";
 
 const drawerWidth = 420;
@@ -28,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     overflowY: "hidden",
+  },
+  fieldset: {
+    padding: 5,
   },
   logo: {
     height: "auto",
@@ -54,6 +58,7 @@ export default function Sidebar({
   loading,
   ranges,
   rangeColors,
+  isMonetaryRange,
   maintenancesData,
   handleChangeLayer,
 }) {
@@ -83,7 +88,7 @@ export default function Sidebar({
         <img src={FalconEye} className={classes.logo} alt="Falconeye logo" />
       </div>
       <Grid item md={12} container justify="flex-end">
-        <FormControl component="fieldset">
+        <FormControl component="fieldset" className={classes.fieldset}>
           <RadioGroup
             row
             aria-label="layers"
@@ -92,22 +97,22 @@ export default function Sidebar({
             onChange={handleChangeLayer}
           >
             <FormControlLabel
-              classes={{ root: classes.radio }}
-              value="monetary-range"
-              control={<Radio color="primary" />}
-              label="Rango Monetario"
-            />
-            <FormControlLabel
-              classes={{ root: classes.radio }}
-              value="orders-range"
-              control={<Radio color="primary" />}
-              label="Rango de Ordenes"
-            />
-            <FormControlLabel
-              classes={{ root: classes.radio }}
+              classes={{ label: classes.radio }}
               value="default"
-              control={<Radio color="primary" />}
-              label="Normal"
+              control={<Radio size="small" color="primary" />}
+              label="General"
+            />
+            <FormControlLabel
+              classes={{ label: classes.radio }}
+              value="monetary-range"
+              control={<Radio size="small" color="primary" />}
+              label="Monetario"
+            />
+            <FormControlLabel
+              classes={{ label: classes.radio }}
+              value="orders-range"
+              control={<Radio size="small" color="primary" />}
+              label="Cantidad de órdenes"
             />
           </RadioGroup>
         </FormControl>
@@ -115,12 +120,20 @@ export default function Sidebar({
 
       {!isDefault && rangeColors && (
         <>
-          <br />
-          <Grid item md={12} container spacing={8} justify="center">
+          <Grid
+            item
+            md={12}
+            container
+            spacing={8}
+            justify="center"
+            className={classes.fieldset}
+          >
             {rangeColors.map((color, i) => (
               <Grid item md={3}>
                 <div style={{ backgroundColor: color, height: 30 }} />
-                {ranges[i]}
+                <Typography align="center" variant="body2">
+                  {isMonetaryRange ? formatToUnits(ranges[i]) : ranges[i]}
+                </Typography>
               </Grid>
             ))}
           </Grid>
@@ -132,7 +145,7 @@ export default function Sidebar({
         <DataBox text="Mantenimientos" number={totalOrders} />
       </Grid>
       <br />
-      <Grid item md={12} container spacing={4}>
+      <Grid item md={12} container spacing={4} className={classes.fieldset}>
         <Grid
           item
           md={6}

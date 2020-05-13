@@ -10,8 +10,8 @@ import { formatToUnits } from "../../utils";
 const API_URL = process.env.REACT_APP_API_URL;
 const TILE_LAYER = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const BOUNDS = new L.LatLngBounds(
-  new L.LatLng(18.40593, -70.018579),
-  new L.LatLng(18.550654, -69.874751)
+  new L.LatLng(18.385844, -70.069322),
+  new L.LatLng(18.647996, -69.751352)
 );
 const VISCOSITY = 0.5;
 const MAX_ZOOM_MAP = 18;
@@ -62,30 +62,33 @@ export default function Map() {
 
   const isLoadingMap = loadingLayer || loading;
   const { ranges, maintenances, rangesOrder } = maintenancesData;
+  const isDefault = layer === "default";
+  const isMonetaryRange = layer === "monetary-range";
+  const layerRange = isMonetaryRange ? ranges : rangesOrder;
 
   return (
     <Grid container spacing={0}>
       <Grid item md={9}>
         {isLoadingMap && <LinearProgress />}
-        {!isLoadingMap && (
-          <LeafletMap className={classes.map} {...MAP_OPTIONS}>
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url={TILE_LAYER}
-            />
-            <MaintenancesMarkers
-              layer={layer}
-              ranges={ranges}
-              classes={classes}
-              rangesOrder={rangesOrder}
-              maintenances={maintenances}
-            />
-          </LeafletMap>
-        )}
+        <LeafletMap className={classes.map} {...MAP_OPTIONS}>
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            url={TILE_LAYER}
+          />
+          <MaintenancesMarkers
+            {...{
+              classes,
+              isDefault,
+              layerRange,
+              maintenances,
+              isMonetaryRange,
+            }}
+          />
+        </LeafletMap>
       </Grid>
       <Grid item md={3}>
         {loading ? (
-          <div style={{ width: "100%", marginTop: 50 }}>
+          <div style={{ width: "100%", marginTop: 50, margin: "0px auto" }}>
             <Typography variant={"body1"}>
               Cargando Costos de Mantenimientos ...
             </Typography>
@@ -93,9 +96,10 @@ export default function Map() {
         ) : (
           <Sidebar
             layer={layer}
-            ranges={ranges}
+            ranges={layerRange}
             loading={loadingLayer}
             rangeColors={rangeColors}
+            isMonetaryRange={isMonetaryRange}
             maintenancesData={maintenancesData}
             handleChangeLayer={handleChangeLayer}
           />
@@ -112,11 +116,11 @@ const between = (number) => (a, b) => {
 };
 
 const MaintenancesMarkers = ({
-  layer,
-  ranges = [],
   classes,
-  rangesOrder = [],
+  isDefault,
+  layerRange = [],
   maintenances = [],
+  isMonetaryRange,
 }) =>
   maintenances.map((maintenance) => {
     const {
@@ -170,12 +174,7 @@ const MaintenancesMarkers = ({
       },
     ];
     const markerCoordinates = [latitude, longitude];
-    const isDefault = layer === "default";
-    const isMonetaryRange = layer === "monetary-range";
-    console.log("isDefault", { layer, isDefault });
-
     let markerColor = undefined;
-    let layerRange = isMonetaryRange ? ranges : rangesOrder;
     let layerProp = isMonetaryRange ? totalCosts : orders;
     if (!isDefault) {
       markerColor = layerRange.reduce((acc, rangeA, index) => {
