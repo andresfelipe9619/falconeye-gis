@@ -68,7 +68,7 @@ export default function Map() {
 
   return (
     <Grid container spacing={0}>
-      <Grid item md={9}>
+      <Grid item md={8}>
         {isLoadingMap && <LinearProgress />}
         <LeafletMap className={classes.map} {...MAP_OPTIONS}>
           <TileLayer
@@ -86,7 +86,7 @@ export default function Map() {
           />
         </LeafletMap>
       </Grid>
-      <Grid item md={3}>
+      <Grid item md={4}>
         {loading ? (
           <div style={{ width: "100%", marginTop: 50, margin: "0px auto" }}>
             <Typography variant={"body1"}>
@@ -194,7 +194,7 @@ const MaintenancesMarkers = ({
         position={markerCoordinates}
         icon={markerIcon(markerColor)}
       >
-        <Popup>
+        <Popup className={classes.popup}>
           <Typography align="left" variant="caption">
             {intersectionID}
           </Typography>
@@ -209,9 +209,9 @@ const MaintenancesMarkers = ({
           <hr />
           <Typography variant={"body2"}>Órdenes: {orders || 0}</Typography>
           <hr />
-          <CostsList checked={isDefault} costs={primaryCosts} />
+          <CostsList checked={!isDefault} costs={primaryCosts} />
           <hr />
-          <CostsList checked={isDefault} costs={secondaryCosts} />
+          <CostsList checked={!isDefault} costs={secondaryCosts} />
           <hr />
           <Typography align="center" variant={"body2"}>
             Total: {formatToUnits(totalCosts)}
@@ -250,7 +250,8 @@ const CostsList = ({ costs = [], checked }) => (
 
 const margin = [[0, 0]];
 const useStyles = makeStyles((theme) => ({
-  map: { height: "calc(100vh - 10px)" },
+  map: { height: "calc(100vh - 5px)" },
+  popup: { minWidth: 300 },
   preventive: { color: "#2AAD27", margin },
   engineering: { color: "#FFD326", margin },
   equipment: { color: theme.palette.info.main, margin },

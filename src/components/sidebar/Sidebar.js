@@ -14,7 +14,7 @@ import DataBox from "../data-box/DataBox";
 import { formatToUnits } from "../../utils";
 import clsx from "clsx";
 
-const drawerWidth = 420;
+const drawerWidth = 430;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
