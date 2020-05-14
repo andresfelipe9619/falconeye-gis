@@ -1,5 +1,5 @@
 import React from "react";
-import RoomIcon from "@material-ui/icons/Room";
-export default function SVGIcon({ color = "#2196f3", ...props }) {
-  return <RoomIcon style={{ color }} {...props} />;
+import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
+export default function SVGIcon({ color = "#2d82cb", ...props }) {
+  return <RoomTwoToneIcon fontSize="large" style={{ color }} {...props} />;
 }

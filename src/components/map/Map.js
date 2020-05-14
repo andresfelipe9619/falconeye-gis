@@ -25,7 +25,8 @@ const MAP_OPTIONS = {
   maxBoundsViscosity: VISCOSITY,
 };
 
-const rangeColors = ["#22b14c", "#fef200", "#ff7f27", "#ed1d25"];
+const rangeColors = ["#2AAD27", "#FFD326", "#CB8427", "#CB2B3E"];
+const rangeColorsName = ["green", "gold", "orange", "red"];
 
 const getMaintenancesData = async () => {
   let response = await fetch(`${API_URL}/maintenances`);
@@ -182,7 +183,7 @@ const MaintenancesMarkers = ({
         if (size - index <= 1) return acc;
         let rangeB = layerRange[index + 1];
         if (between(layerProp)(rangeA, rangeB)) {
-          return rangeColors[index];
+          return rangeColorsName[index];
         }
         return acc;
       }, "");
