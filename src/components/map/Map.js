@@ -171,7 +171,7 @@ const MaintenancesMarkers = ({
       {
         label: "Servicios",
         value: services,
-        className: classes.preventive,
+        className: classes.services,
       },
     ];
     const markerCoordinates = [latitude, longitude];
@@ -254,6 +254,7 @@ const useStyles = makeStyles((theme) => ({
   map: { height: "calc(100vh - 5px)" },
   popup: { minWidth: 300 },
   preventive: { color: "#2AAD27", margin },
+  services: { color: "#924767", margin },
   engineering: { color: "#FFD326", margin },
   equipment: { color: theme.palette.info.main, margin },
   materials: { color: "#757575", margin },

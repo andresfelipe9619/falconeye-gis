@@ -14,12 +14,18 @@ import DataBox from "../data-box/DataBox";
 import { formatToUnits } from "../../utils";
 import clsx from "clsx";
 
-const drawerWidth = 430;
+const drawerWidthMD = 430;
+const drawerWidthLG = "33.333%";
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
     padding: 5,
-    width: drawerWidth,
+    [theme.breakpoints.down("lg")]: {
+      width: drawerWidthMD,
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: drawerWidthLG,
+    },
     flexShrink: 0,
   },
   content: {
@@ -27,7 +33,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
   },
   drawerPaper: {
-    width: drawerWidth,
+    [theme.breakpoints.down("lg")]: {
+      width: drawerWidthMD,
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: drawerWidthLG,
+    },
     overflowY: "hidden",
   },
   fieldset: {
@@ -47,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
   leftBox: { borderRight: [[2, "dashed", theme.palette.divider]] },
   toolbar: { textAlign: "center", background: "white" },
   preventive: { color: "#2AAD27" },
+  services: { color: "#924767" },
   engineering: { color: "#FFD326" },
   equipment: { color: theme.palette.info.main },
   materials: { color: "#757575" },
@@ -124,15 +136,15 @@ export default function Sidebar({
             item
             md={12}
             container
-            spacing={8}
+            spacing={6}
             justify="center"
             className={classes.fieldset}
           >
             {rangeColors.map((color, i) => (
-              <Grid item md={3}>
-                <div style={{ backgroundColor: color, height: 30 }} />
-                <Typography align="center" variant="body2">
-                  {isMonetaryRange ? formatToUnits(ranges[i]) : ranges[i]}
+              <Grid key={color} container direction="column" item md={3}>
+                <div style={{ backgroundColor: color, height: 30, width: 40 }} />
+                <Typography variant="body2">
+                  {`${isMonetaryRange ? formatToUnits(ranges[i]) : ranges[i]} - ${isMonetaryRange ? formatToUnits(ranges[i + 1] - 1) : ranges[i + 1] - 1}`}
                 </Typography>
               </Grid>
             ))}
@@ -193,7 +205,7 @@ export default function Sidebar({
           <DataBox
             small
             currency
-            className={clsx({ [classes.preventive]: isDefault })}
+            className={clsx({ [classes.services]: isDefault })}
             text="Servicios"
             number={totalServices}
           />
@@ -224,86 +236,86 @@ function LocationsListComponent({ classes, maintenances, isDefault }) {
           intersectionID,
           engineering,
         }) => (
-          <ListItem dense divider button key={intersectionID}>
-            <Grid container spacing={2}>
-              <Grid item container md={4}>
-                <ListItemText
-                  primary={
-                    <>
-                      <Typography align="left" variant="caption">
-                        {intersectionID}
-                      </Typography>
-                      <Typography align="left" variant="body2">
-                        {mainStreet}
-                      </Typography>
-                    </>
-                  }
-                  secondary={secondStreet}
-                />
-              </Grid>
-              <Grid
-                item
-                md={4}
-                container
-                justify="center"
-                className={classes.leftBox}
-                direction="column"
-              >
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="C"
-                  className={clsx({ [classes.corrective]: isDefault })}
-                  number={corrective}
-                />
+            <ListItem dense divider button key={intersectionID}>
+              <Grid container spacing={2}>
+                <Grid item container md={4}>
+                  <ListItemText
+                    primary={
+                      <>
+                        <Typography align="left" variant="caption">
+                          {intersectionID}
+                        </Typography>
+                        <Typography align="left" variant="body2">
+                          {mainStreet}
+                        </Typography>
+                      </>
+                    }
+                    secondary={secondStreet}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  md={4}
+                  container
+                  justify="center"
+                  className={classes.leftBox}
+                  direction="column"
+                >
+                  <DataBox
+                    small
+                    currency
+                    shortLabel
+                    text="C"
+                    className={clsx({ [classes.corrective]: isDefault })}
+                    number={corrective}
+                  />
 
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="I"
-                  className={clsx({ [classes.engineering]: isDefault })}
-                  number={engineering}
-                />
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="P"
-                  className={clsx({ [classes.preventive]: isDefault })}
-                  number={preventive}
-                />
+                  <DataBox
+                    small
+                    currency
+                    shortLabel
+                    text="I"
+                    className={clsx({ [classes.engineering]: isDefault })}
+                    number={engineering}
+                  />
+                  <DataBox
+                    small
+                    currency
+                    shortLabel
+                    text="P"
+                    className={clsx({ [classes.preventive]: isDefault })}
+                    number={preventive}
+                  />
+                </Grid>
+                <Grid item md={4} justify="center" container direction="column">
+                  <DataBox
+                    small
+                    currency
+                    shortLabel
+                    text="E"
+                    className={clsx({ [classes.equipment]: isDefault })}
+                    number={equipments}
+                  />
+                  <DataBox
+                    small
+                    currency
+                    shortLabel
+                    text="M"
+                    className={clsx({ [classes.materials]: isDefault })}
+                    number={materials}
+                  />
+                  <DataBox
+                    small
+                    currency
+                    shortLabel
+                    text="S"
+                    className={clsx({ [classes.services]: isDefault })}
+                    number={services}
+                  />
+                </Grid>
               </Grid>
-              <Grid item md={4} justify="center" container direction="column">
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="E"
-                  className={clsx({ [classes.equipment]: isDefault })}
-                  number={equipments}
-                />
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="M"
-                  className={clsx({ [classes.materials]: isDefault })}
-                  number={materials}
-                />
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="S"
-                  className={clsx({ [classes.preventive]: isDefault })}
-                  number={services}
-                />
-              </Grid>
-            </Grid>
-          </ListItem>
-        )
+            </ListItem>
+          )
       )}
     </List>
   );
