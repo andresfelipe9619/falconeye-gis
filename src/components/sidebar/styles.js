@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
   fontRange: {
       fontSize: 11
   },
+  rangeBox: { borderRight: [[1, "solid", theme.palette.divider]] },
   leftBox: { borderRight: [[2, "dashed", theme.palette.divider]] },
   toolbar: { textAlign: "center", background: "white" },
   preventive: { color: "#2AAD27" },

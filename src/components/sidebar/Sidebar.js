@@ -91,29 +91,39 @@ export default function Sidebar({
             justify="center"
             className={classes.fieldset}
           >
-            {rangeColors.map((color, i) => (
-              <Grid
-                item
-                md={3}
-                container
-                key={color}
-                direction="column"
-                alignItems="center"
-              >
-                <div
-                  style={{ backgroundColor: color, height: 30, width: 40 }}
-                />
-                <Typography className={classes.fontRange} align="center" variant="body2">
-                  {`${
-                    isMonetaryRange ? formatToUnits(ranges[i]) : ranges[i]
-                  } - ${
-                    isMonetaryRange
-                      ? formatToUnits(ranges[i + 1] - 1)
-                      : ranges[i + 1] - 1
-                  }`}
-                </Typography>
-              </Grid>
-            ))}
+            {rangeColors.map((color, i) => {
+              let size = rangeColors.length - 1;
+              let current = i > 0 ? ranges[i] + 1 : ranges[i];
+              let next = ranges[i + 1];
+              let min = isMonetaryRange ? formatToUnits(current, 0) : current;
+              let max = isMonetaryRange ? formatToUnits(next, 0) : next;
+
+              let rangeText = `${min} - ${max}`;
+              return (
+                <Grid
+                  item
+                  md={3}
+                  container
+                  key={color}
+                  className={clsx({
+                    [classes.rangeBox]: i < size,
+                  })}
+                  direction="column"
+                  alignItems="center"
+                >
+                  <div
+                    style={{ backgroundColor: color, height: 30, width: 40 }}
+                  />
+                  <Typography
+                    className={classes.fontRange}
+                    align="center"
+                    variant="body2"
+                  >
+                    {rangeText}
+                  </Typography>
+                </Grid>
+              );
+            })}
           </Grid>
           <Divider variant="middle" />
         </>
