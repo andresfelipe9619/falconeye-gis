@@ -47,12 +47,6 @@ const useStyles = makeStyles((theme) => ({
   rangeBox: { borderRight: [[1, "solid", theme.palette.divider]] },
   leftBox: { borderRight: [[2, "dashed", theme.palette.divider]] },
   toolbar: { textAlign: "center", background: "white" },
-  preventive: { color: "#2AAD27" },
-  services: { color: "#924767" },
-  engineering: { color: "#FFD326" },
-  equipment: { color: theme.palette.info.main },
-  materials: { color: "#757575" },
-  corrective: { color: theme.palette.error.main },
 }));
 
 export default useStyles;

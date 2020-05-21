@@ -21,6 +21,7 @@ export default function Sidebar({
   layer,
   loading,
   ranges,
+  colorsClasses,
   rangeColors,
   isMonetaryRange,
   maintenancesData,
@@ -146,7 +147,7 @@ export default function Sidebar({
             small
             currency
             text="Correctivos"
-            className={clsx({ [classes.corrective]: isDefault })}
+            className={clsx({ [colorsClasses.corrective]: isDefault })}
             number={totalCorrective}
           />
           <DataBox
@@ -154,14 +155,14 @@ export default function Sidebar({
             currency
             text="Ingeniería"
             number={totalEngineering}
-            className={clsx({ [classes.engineering]: isDefault })}
+            className={clsx({ [colorsClasses.engineering]: isDefault })}
           />
           <DataBox
             small
             currency
             text="Preventivos"
             number={totalPreventive}
-            className={clsx({ [classes.preventive]: isDefault })}
+            className={clsx({ [colorsClasses.preventive]: isDefault })}
           />
         </Grid>
         <Grid item md={6} container direction="column">
@@ -170,19 +171,19 @@ export default function Sidebar({
             currency
             text="Equipos"
             number={totalEquipments}
-            className={clsx({ [classes.equipment]: isDefault })}
+            className={clsx({ [colorsClasses.equipment]: isDefault })}
           />
           <DataBox
             small
             currency
             text="Materiales"
             number={totalMaterials}
-            className={clsx({ [classes.materials]: isDefault })}
+            className={clsx({ [colorsClasses.materials]: isDefault })}
           />
           <DataBox
             small
             currency
-            className={clsx({ [classes.services]: isDefault })}
+            className={clsx({ [colorsClasses.services]: isDefault })}
             text="Servicios"
             number={totalServices}
           />
@@ -192,7 +193,13 @@ export default function Sidebar({
       {loading && <LinearProgress />}
       <Divider variant="middle" />
       {!!maintenances.length && (
-        <LocationsList {...{ classes, maintenances, isDefault }} />
+        <LocationsList
+          {...{
+            classes: { ...classes, ...colorsClasses },
+            maintenances,
+            isDefault,
+          }}
+        />
       )}
     </Drawer>
   );
@@ -203,6 +210,7 @@ function LocationsListComponent({ classes, maintenances, isDefault }) {
     <List classes={{ root: classes.list }}>
       {maintenances.map(
         ({
+          id,
           mainStreet,
           secondStreet,
           corrective,
@@ -213,7 +221,7 @@ function LocationsListComponent({ classes, maintenances, isDefault }) {
           intersectionID,
           engineering,
         }) => (
-          <ListItem dense divider button key={intersectionID}>
+          <ListItem dense divider button key={id}>
             <Grid container spacing={2}>
               <Grid item container md={4}>
                 <ListItemText

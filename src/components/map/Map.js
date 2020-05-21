@@ -7,6 +7,8 @@ import Grid from "@material-ui/core/Grid";
 import Sidebar from "../sidebar/Sidebar";
 import { Typography, LinearProgress } from "@material-ui/core";
 import { formatToUnits } from "../../utils";
+import useColors from "../../hooks/useColors";
+
 const API_URL = process.env.REACT_APP_API_URL;
 const TILE_LAYER = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const BOUNDS = new L.LatLngBounds(
@@ -34,16 +36,26 @@ const getMaintenancesData = async () => {
   return jsonData;
 };
 
+const getColorsData = async () => {
+  let response = await fetch(`${API_URL}/colors`);
+  let jsonData = await response.json();
+  return jsonData;
+};
+
 export default function Map() {
   const classes = useStyles();
   const [maintenancesData, setMaintenancesData] = useState({});
+  const [colorsData, setColorsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingLayer, setLoadingLayer] = useState(false);
   const [layer, setLayer] = useState("default");
+
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
+        let colors = await getColorsData();
+        setColorsData(colors);
         let data = await getMaintenancesData();
         setMaintenancesData(data);
       } catch (error) {
@@ -53,7 +65,21 @@ export default function Map() {
       }
     })();
   }, []);
-
+  console.log('colorsData', colorsData)
+  const currentLayer = colorsData.find((c) => c.property === layer);
+  let currentLayerColors = {};
+  if ((currentLayer || {}).sg_attributes) {
+    currentLayerColors = currentLayer.sg_attributes.reduce(
+      (acc, { property, sg_layers_attributes }) => ({
+        ...acc,
+        [property]: sg_layers_attributes.color,
+      }),
+      {}
+    );
+  }
+  console.log('currentLayerColors', currentLayerColors)
+  const colorsClasses = useColors(currentLayerColors);
+  console.log('colorsClasses', colorsClasses)
   const handleChangeLayer = useCallback((event) => {
     let { value } = event.target;
     setLoadingLayer(true);
@@ -76,30 +102,34 @@ export default function Map() {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url={TILE_LAYER}
           />
-          <MaintenancesMarkers
-            {...{
-              classes,
-              isDefault,
-              layerRange,
-              maintenances,
-              isMonetaryRange,
-            }}
-          />
+          {currentLayer && (
+            <MaintenancesMarkers
+              {...{
+                isDefault,
+                layerRange,
+                maintenances,
+                isMonetaryRange,
+                classes: { ...classes, ...colorsClasses },
+              }}
+            />
+          )}
         </LeafletMap>
       </Grid>
       <Grid item md={4}>
-        {loading ? (
+        {loading && (
           <div style={{ width: "100%", marginTop: 50, margin: "0px auto" }}>
             <Typography variant={"body1"}>
               Cargando Costos de Mantenimientos ...
             </Typography>
           </div>
-        ) : (
+        )}
+        {!loading && currentLayer && (
           <Sidebar
             layer={layer}
             ranges={layerRange}
             loading={loadingLayer}
             rangeColors={rangeColors}
+            colorsClasses={colorsClasses}
             isMonetaryRange={isMonetaryRange}
             maintenancesData={maintenancesData}
             handleChangeLayer={handleChangeLayer}
@@ -125,6 +155,7 @@ const MaintenancesMarkers = ({
 }) =>
   maintenances.map((maintenance) => {
     const {
+      id,
       intersectionID,
       corrective,
       preventive,
@@ -191,7 +222,7 @@ const MaintenancesMarkers = ({
 
     return (
       <Marker
-        key={intersectionID}
+        key={id}
         position={markerCoordinates}
         icon={markerIcon(markerColor)}
       >
@@ -250,13 +281,7 @@ const CostsList = ({ costs = [], checked }) => (
 );
 
 const margin = [[0, 0]];
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   map: { height: "calc(100vh - 5px)" },
   popup: { minWidth: 300 },
-  preventive: { color: "#2AAD27", margin },
-  services: { color: "#924767", margin },
-  engineering: { color: "#FFD326", margin },
-  equipment: { color: theme.palette.info.main, margin },
-  materials: { color: "#757575", margin },
-  corrective: { color: theme.palette.error.main, margin },
 }));
