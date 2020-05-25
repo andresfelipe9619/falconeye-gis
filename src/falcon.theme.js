@@ -24,8 +24,8 @@ const FalconPalette = {
   },
 };
 
-const BrooklynTheme = createMuiTheme({
+const FalconTheme = createMuiTheme({
   palette: FalconPalette,
 });
 
-export default BrooklynTheme;
+export default FalconTheme;
