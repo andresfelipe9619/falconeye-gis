@@ -7,7 +7,6 @@ import Grid from "@material-ui/core/Grid";
 import Sidebar from "../sidebar/Sidebar";
 import { Typography, LinearProgress } from "@material-ui/core";
 import { formatToUnits } from "../../utils";
-import useColors from "../../hooks/useColors";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const TILE_LAYER = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -47,7 +46,6 @@ export default function Map() {
   const [maintenancesData, setMaintenancesData] = useState({});
   const [colorsData, setColorsData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingLayer, setLoadingLayer] = useState(false);
   const [layer, setLayer] = useState("default");
 
   useEffect(() => {
@@ -65,7 +63,7 @@ export default function Map() {
       }
     })();
   }, []);
-  console.log("colorsData", colorsData);
+
   const currentLayer = colorsData.find((c) => c.property === layer);
   let currentLayerColors = {};
   if ((currentLayer || {}).sg_attributes) {
@@ -77,15 +75,12 @@ export default function Map() {
       {}
     );
   }
-  console.log("currentLayerColors", currentLayerColors);
+
   const handleChangeLayer = useCallback((event) => {
     let { value } = event.target;
-    setLoadingLayer(true);
-    setTimeout(() => setLayer(value), 1500);
-    setTimeout(() => setLoadingLayer(false), 2000);
+    setLayer(value)
   }, []);
 
-  const isLoadingMap = loadingLayer || loading;
   const { ranges, maintenances, rangesOrder } = maintenancesData;
   const isDefault = layer === "default";
   const isMonetaryRange = layer === "monetary-range";
@@ -94,7 +89,7 @@ export default function Map() {
   return (
     <Grid container spacing={0}>
       <Grid item md={8}>
-        {isLoadingMap && <LinearProgress />}
+        {loading && <LinearProgress />}
         <LeafletMap className={classes.map} {...MAP_OPTIONS}>
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -126,7 +121,6 @@ export default function Map() {
           <Sidebar
             layer={layer}
             ranges={layerRange}
-            loading={loadingLayer}
             rangeColors={rangeColors}
             isMonetaryRange={isMonetaryRange}
             maintenancesData={maintenancesData}
