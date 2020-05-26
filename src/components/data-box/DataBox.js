@@ -6,7 +6,7 @@ import { formatToUnits } from "../../utils";
 
 const DataBox = (props) => {
   if (props.currency) return <CurrencyBox {...props} />;
-  const { text, number, className, small } = props;
+  const { text, number, style, small } = props;
   return (
     <Box
       m={1}
@@ -16,14 +16,14 @@ const DataBox = (props) => {
     >
       <Typography
         align="center"
-        className={className}
+        style={style}
         component={small ? "h3" : "h2"}
         variant={small ? "body1" : "h6"}
       >
         {number}
       </Typography>
       {text && (
-        <Typography align={"left"} className={className} variant="body2">
+        <Typography align={"left"} style={style} variant="body2">
           {text}
         </Typography>
       )}
@@ -31,13 +31,13 @@ const DataBox = (props) => {
   );
 };
 
-export const CurrencyBox = ({ text, number, className, small, shortLabel }) => (
+export const CurrencyBox = ({ text, number, style, small, shortLabel }) => (
   <Grid container spacing={0} alignItems="center">
     {text && (
       <Grid item md={shortLabel ? 2 : 6}>
         <Typography
           align="left"
-          className={className}
+          style={style}
           component="h3"
           variant="body2"
         >
@@ -48,7 +48,7 @@ export const CurrencyBox = ({ text, number, className, small, shortLabel }) => (
     <Grid item md={shortLabel ? 10 : 6}>
       <Typography
         align="right"
-        className={className}
+        style={style}
         variant={small ? "body2" : "body1"}
       >
         {formatToUnits(number)}

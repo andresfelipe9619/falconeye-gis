@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
   },
   list: {
-    overflowY: "auto",
-    overflowX: "hidden",
+    width: '100%',
+    height: "100%",
   },
   fontRange: {
       fontSize: 11

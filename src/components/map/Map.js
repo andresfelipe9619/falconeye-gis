@@ -65,7 +65,7 @@ export default function Map() {
       }
     })();
   }, []);
-  console.log('colorsData', colorsData)
+  console.log("colorsData", colorsData);
   const currentLayer = colorsData.find((c) => c.property === layer);
   let currentLayerColors = {};
   if ((currentLayer || {}).sg_attributes) {
@@ -77,9 +77,7 @@ export default function Map() {
       {}
     );
   }
-  console.log('currentLayerColors', currentLayerColors)
-  const colorsClasses = useColors(currentLayerColors);
-  console.log('colorsClasses', colorsClasses)
+  console.log("currentLayerColors", currentLayerColors);
   const handleChangeLayer = useCallback((event) => {
     let { value } = event.target;
     setLoadingLayer(true);
@@ -105,11 +103,12 @@ export default function Map() {
           {currentLayer && (
             <MaintenancesMarkers
               {...{
+                classes,
                 isDefault,
                 layerRange,
                 maintenances,
                 isMonetaryRange,
-                classes: { ...classes, ...colorsClasses },
+                currentLayerColors,
               }}
             />
           )}
@@ -129,10 +128,10 @@ export default function Map() {
             ranges={layerRange}
             loading={loadingLayer}
             rangeColors={rangeColors}
-            colorsClasses={colorsClasses}
             isMonetaryRange={isMonetaryRange}
             maintenancesData={maintenancesData}
             handleChangeLayer={handleChangeLayer}
+            currentLayerColors={currentLayerColors}
           />
         )}
       </Grid>
@@ -151,6 +150,7 @@ const MaintenancesMarkers = ({
   isDefault,
   layerRange = [],
   maintenances = [],
+  currentLayerColors,
   isMonetaryRange,
 }) =>
   maintenances.map((maintenance) => {
@@ -175,34 +175,34 @@ const MaintenancesMarkers = ({
       {
         label: "Preventivo",
         value: preventive,
-        className: classes.preventive,
+        color: currentLayerColors.preventive,
       },
       {
         label: "Ingeniería",
         value: engineering,
-        className: classes.engineering,
+        color: currentLayerColors.engineering,
       },
       {
         label: "Correctivo",
         value: corrective,
-        className: classes.corrective,
+        color: currentLayerColors.corrective,
       },
     ];
     const secondaryCosts = [
       {
         label: "Equipos",
         value: equipments,
-        className: classes.equipment,
+        color: currentLayerColors.equipment,
       },
       {
         label: "Materiales",
         value: materials,
-        className: classes.materials,
+        color: currentLayerColors.materials,
       },
       {
         label: "Servicios",
         value: services,
-        className: classes.services,
+        color: currentLayerColors.services,
       },
     ];
     const markerCoordinates = [latitude, longitude];
@@ -255,12 +255,12 @@ const MaintenancesMarkers = ({
 
 const CostsList = ({ costs = [], checked }) => (
   <Grid item md={12} container spacing={0} direction="column">
-    {costs.map(({ label, value, className }) => (
+    {costs.map(({ label, value, color }) => (
       <Grid key={label} item md={12} container>
         <Grid item sm={1} md={4} container>
           <Typography
             component="span"
-            className={checked ? undefined : className}
+            style={checked ? undefined : { color }}
             variant={"body2"}
           >
             {label}:
@@ -269,7 +269,7 @@ const CostsList = ({ costs = [], checked }) => (
         <Grid item sm={11} md={8} container justify="flex-end">
           <Typography
             component="span"
-            className={checked ? undefined : className}
+            className={checked ? undefined : { color }}
             variant={"body2"}
           >
             {formatToUnits(value)}
@@ -280,7 +280,6 @@ const CostsList = ({ costs = [], checked }) => (
   </Grid>
 );
 
-const margin = [[0, 0]];
 const useStyles = makeStyles(() => ({
   map: { height: "calc(100vh - 5px)" },
   popup: { minWidth: 300 },

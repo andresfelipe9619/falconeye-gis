@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import Map from "./components/map/Map";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
@@ -11,4 +11,4 @@ function App() {
   );
 }
 
-export default memo(App);
+export default App;

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import Drawer from "@material-ui/core/Drawer";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -16,12 +16,13 @@ import DataBox from "../data-box/DataBox";
 import { formatToUnits } from "../../utils";
 import clsx from "clsx";
 import useStyles from "./styles";
+import { FixedSizeList } from "react-window";
 
 export default function Sidebar({
   layer,
   loading,
   ranges,
-  colorsClasses,
+  currentLayerColors,
   rangeColors,
   isMonetaryRange,
   maintenancesData,
@@ -147,7 +148,9 @@ export default function Sidebar({
             small
             currency
             text="Correctivos"
-            className={clsx({ [colorsClasses.corrective]: isDefault })}
+            style={{
+              color: clsx({ [currentLayerColors.corrective]: isDefault }),
+            }}
             number={totalCorrective}
           />
           <DataBox
@@ -155,14 +158,18 @@ export default function Sidebar({
             currency
             text="Ingeniería"
             number={totalEngineering}
-            className={clsx({ [colorsClasses.engineering]: isDefault })}
+            style={{
+              color: clsx({ [currentLayerColors.engineering]: isDefault }),
+            }}
           />
           <DataBox
             small
             currency
             text="Preventivos"
             number={totalPreventive}
-            className={clsx({ [colorsClasses.preventive]: isDefault })}
+            style={{
+              color: clsx({ [currentLayerColors.preventive]: isDefault }),
+            }}
           />
         </Grid>
         <Grid item md={6} container direction="column">
@@ -171,19 +178,25 @@ export default function Sidebar({
             currency
             text="Equipos"
             number={totalEquipments}
-            className={clsx({ [colorsClasses.equipment]: isDefault })}
+            style={{
+              color: clsx({ [currentLayerColors.equipment]: isDefault }),
+            }}
           />
           <DataBox
             small
             currency
             text="Materiales"
             number={totalMaterials}
-            className={clsx({ [colorsClasses.materials]: isDefault })}
+            style={{
+              color: clsx({ [currentLayerColors.materials]: isDefault }),
+            }}
           />
           <DataBox
             small
             currency
-            className={clsx({ [colorsClasses.services]: isDefault })}
+            style={{
+              color: clsx({ [currentLayerColors.services]: isDefault }),
+            }}
             text="Servicios"
             number={totalServices}
           />
@@ -195,7 +208,7 @@ export default function Sidebar({
       {!!maintenances.length && (
         <LocationsList
           {...{
-            classes: { ...classes, ...colorsClasses },
+            classes: { ...classes, ...currentLayerColors },
             maintenances,
             isDefault,
           }}
@@ -205,105 +218,127 @@ export default function Sidebar({
   );
 }
 
-function LocationsListComponent({ classes, maintenances, isDefault }) {
-  return (
-    <List classes={{ root: classes.list }}>
-      {maintenances.map(
-        ({
-          id,
-          mainStreet,
-          secondStreet,
-          corrective,
-          preventive,
-          equipments,
-          materials,
-          services,
-          intersectionID,
-          engineering,
-        }) => (
-          <ListItem dense divider button key={id}>
-            <Grid container spacing={2}>
-              <Grid item container md={4}>
-                <ListItemText
-                  primary={
-                    <>
-                      <Typography align="left" variant="caption">
-                        {intersectionID}
-                      </Typography>
-                      <Typography align="left" variant="body2">
-                        {mainStreet}
-                      </Typography>
-                    </>
-                  }
-                  secondary={secondStreet}
-                />
-              </Grid>
-              <Grid
-                item
-                md={4}
-                container
-                justify="center"
-                className={classes.leftBox}
-                direction="column"
-              >
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="C"
-                  className={clsx({ [classes.corrective]: isDefault })}
-                  number={corrective}
-                />
+const renderRow = (props) => (tableProps) => {
+  console.log("{props, tableProps}", { props, tableProps });
+  const { classes, maintenances, isDefault } = props;
+  const { index, style } = tableProps;
+  const {
+    id,
+    mainStreet,
+    secondStreet,
+    corrective,
+    preventive,
+    equipments,
+    materials,
+    services,
+    intersectionID,
+    engineering,
+  } = maintenances[index];
 
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="I"
-                  className={clsx({ [classes.engineering]: isDefault })}
-                  number={engineering}
-                />
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="P"
-                  className={clsx({ [classes.preventive]: isDefault })}
-                  number={preventive}
-                />
-              </Grid>
-              <Grid item md={4} justify="center" container direction="column">
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="E"
-                  className={clsx({ [classes.equipment]: isDefault })}
-                  number={equipments}
-                />
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="M"
-                  className={clsx({ [classes.materials]: isDefault })}
-                  number={materials}
-                />
-                <DataBox
-                  small
-                  currency
-                  shortLabel
-                  text="S"
-                  className={clsx({ [classes.services]: isDefault })}
-                  number={services}
-                />
-              </Grid>
-            </Grid>
-          </ListItem>
-        )
-      )}
-    </List>
+  return (
+    <ListItem dense divider button style={style} key={id}>
+      <Grid container spacing={2}>
+        <Grid item container md={4}>
+          <ListItemText
+            primary={
+              <>
+                <Typography align="left" variant="caption">
+                  {intersectionID}
+                </Typography>
+                <Typography align="left" variant="body2">
+                  {mainStreet}
+                </Typography>
+              </>
+            }
+            secondary={secondStreet}
+          />
+        </Grid>
+        <Grid
+          item
+          md={4}
+          container
+          justify="center"
+          className={classes.leftBox}
+          direction="column"
+        >
+          <DataBox
+            small
+            currency
+            shortLabel
+            text="C"
+            style={{
+              color: clsx({ [classes.corrective]: isDefault }),
+            }}
+            number={corrective}
+          />
+
+          <DataBox
+            small
+            currency
+            shortLabel
+            text="I"
+            style={{
+              color: clsx({ [classes.engineering]: isDefault }),
+            }}
+            number={engineering}
+          />
+          <DataBox
+            small
+            currency
+            shortLabel
+            text="P"
+            style={{
+              color: clsx({ [classes.preventive]: isDefault }),
+            }}
+            number={preventive}
+          />
+        </Grid>
+        <Grid item md={4} justify="center" container direction="column">
+          <DataBox
+            small
+            currency
+            shortLabel
+            text="E"
+            style={{
+              color: clsx({ [classes.equipment]: isDefault }),
+            }}
+            number={equipments}
+          />
+          <DataBox
+            small
+            currency
+            shortLabel
+            text="M"
+            style={{
+              color: clsx({ [classes.materials]: isDefault }),
+            }}
+            number={materials}
+          />
+          <DataBox
+            small
+            currency
+            shortLabel
+            text="S"
+            style={{ color: clsx({ [classes.services]: isDefault }) }}
+            number={services}
+          />
+        </Grid>
+      </Grid>
+    </ListItem>
+  );
+};
+
+function LocationsList({ classes, maintenances, isDefault }) {
+  return (
+    <div className={classes.list}>
+      <FixedSizeList
+        height={1600}
+        width={"100%"}
+        itemSize={100}
+        itemCount={maintenances.length}
+      >
+        {renderRow({ classes, maintenances, isDefault })}
+      </FixedSizeList>
+    </div>
   );
 }
-
-const LocationsList = memo(LocationsListComponent);
