@@ -93,13 +93,8 @@ export default function Sidebar({
             className={classes.fieldset}
           >
             {rangeColors.map((color, i) => {
-              let size = rangeColors.length - 1;
-              let current = i > 0 ? ranges[i] + 1 : ranges[i];
-              let next = ranges[i + 1];
-              let min = isMonetaryRange ? formatToUnits(current, 0) : current;
-              let max = isMonetaryRange ? formatToUnits(next, 0) : next;
-
-              let rangeText = `${min} - ${max}`;
+              const size = rangeColors.length - 1;
+              const rangeText = ranges[i];
               return (
                 <Grid
                   item

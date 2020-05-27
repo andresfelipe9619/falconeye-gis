@@ -85,8 +85,12 @@ export default function Map() {
   const { ranges, maintenances, rangesOrder } = maintenancesData;
   const isDefault = layer === "default";
   const isMonetaryRange = layer === "monetary-range";
-  const layerRange = isMonetaryRange ? ranges : rangesOrder;
-
+  let layerRange = isMonetaryRange ? ranges : rangesOrder;
+  let displayNameRanges = [];
+  if ((currentLayer || {}).sg_numRanges) {
+    displayNameRanges = currentLayer.sg_numRanges.map(({ displayName }) => displayName);
+  }
+  console.log('displayNameRanges', displayNameRanges)
   return (
     <Grid container spacing={0}>
       <Grid item md={8}>
@@ -121,7 +125,7 @@ export default function Map() {
         {!loading && currentLayer && (
           <Sidebar
             layer={layer}
-            ranges={layerRange}
+            ranges={displayNameRanges}
             rangeColors={rangeColors}
             isMonetaryRange={isMonetaryRange}
             maintenancesData={maintenancesData}
