@@ -12,7 +12,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import DataBox from "../data-box/DataBox";
-import { formatToUnits } from "../../utils";
 import clsx from "clsx";
 import useStyles from "./styles";
 import { FixedSizeList } from "react-window";
