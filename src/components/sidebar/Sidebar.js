@@ -292,7 +292,7 @@ const renderRow = (props) => (tableProps) => {
             shortLabel
             text="E"
             style={{
-              color: classes.equipments,
+              color: classes.equipment,
             }}
             number={equipments}
           />
