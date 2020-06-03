@@ -286,6 +286,6 @@ const CostsList = ({ costs = [] }) => (
 );
 
 const useStyles = makeStyles(() => ({
-  map: { height: "calc(100vh - 5px)" },
+  map: { height: "calc(100vh - 2px)" },
   popup: { minWidth: 300 },
 }));
