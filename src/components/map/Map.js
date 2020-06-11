@@ -7,6 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Sidebar from "../sidebar/Sidebar";
 import { Typography, LinearProgress } from "@material-ui/core";
 import { formatToUnits } from "../../utils";
+import "./index.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
 const TILE_LAYER = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";

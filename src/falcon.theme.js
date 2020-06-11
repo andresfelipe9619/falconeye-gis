@@ -1,9 +1,10 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { useState } from "react";
+
 const primaryColor = "#b2993e";
 const primaryGray = "rgba(85, 85, 85, 1)";
 
 const FalconPalette = {
-  type: "dark",
+  type: "light",
   primary: {
     main: primaryColor,
   },
@@ -24,8 +25,27 @@ const FalconPalette = {
   },
 };
 
-const FalconTheme = createMuiTheme({
+const FalconTheme = {
   palette: FalconPalette,
-});
+};
+
+export function useDarkMode() {
+  const [theme, setTheme] = useState(FalconTheme);
+  const {
+    palette: { type },
+  } = theme;
+  const toggleDarkMode = () => {
+    const updatedTheme = {
+      ...theme,
+      palette: {
+        ...theme.palette,
+        type: type === "light" ? "dark" : "light",
+      },
+    };
+    setTheme(updatedTheme);
+  };
+
+  return [theme, toggleDarkMode];
+}
 
 export default FalconTheme;
