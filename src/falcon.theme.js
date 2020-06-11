@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core/styles";
-const primaryColor = "#ff9800";
+const primaryColor = "#b2993e";
 const primaryGray = "rgba(85, 85, 85, 1)";
 
 const FalconPalette = {

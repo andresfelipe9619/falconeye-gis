@@ -1,15 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import "./index.css"
+import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import FalconTheme from "./falcon.theme";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
     <MuiThemeProvider theme={FalconTheme}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
