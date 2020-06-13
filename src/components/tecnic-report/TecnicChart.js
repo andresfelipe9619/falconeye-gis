@@ -45,7 +45,7 @@ export default function TecnicChart({ style, data, economic }) {
           <Grid container className={classes.container}>
             <ResponsiveLine
               data={data}
-              tooltipFormat={economic ? formatToUnits : undefined}
+              yFormat={economic ? formatToUnits : undefined}
               margin={{ top: 5, right: 110, bottom: 80, left: 60 }}
               xScale={{ type: "point" }}
               yScale={{
@@ -63,7 +63,7 @@ export default function TecnicChart({ style, data, economic }) {
                 orient: "bottom",
                 tickSize: 5,
                 tickPadding: 5,
-                tickRotation: 0,
+                tickRotation: 90,
                 legend: "",
                 legendOffset: 36,
                 legendPosition: "middle",
@@ -93,7 +93,7 @@ export default function TecnicChart({ style, data, economic }) {
                   direction: "row",
                   justify: false,
                   translateX: 50,
-                  translateY: 60,
+                  translateY: 80,
                   itemsSpacing: 0,
                   itemDirection: "left-to-right",
                   itemWidth: 80,

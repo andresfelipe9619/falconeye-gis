@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import AssistsRanking from "../tecnic-report/AssistsRanking";
 import MarkedBarChart from "../mark-bar-chart/MarkedBarChart";
 import { formatToUnits } from "../../utils";
+import TecnicChart from "../tecnic-report/TecnicChart";
 
 export default function NewEconomicReport(props) {
   const { getData } = props;
@@ -93,6 +94,7 @@ export default function NewEconomicReport(props) {
           )
         )}
       </Grid>
+      <TecnicChart economic data={(data || {}).lineData || []} />
       <Grid container item md={12}>
         <Card raised>
           <CardContent>
