@@ -46,7 +46,7 @@ export default function TecnicChart({ style, data, economic }) {
             <ResponsiveLine
               data={data}
               yFormat={economic ? formatToUnits : undefined}
-              margin={{ top: 5, right: 110, bottom: 80, left: 60 }}
+              margin={{ top: 20, right: 110, bottom: 80, left: 60 }}
               xScale={{ type: "point" }}
               yScale={{
                 type: "linear",
