@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { Switch, Route, useLocation } from "react-router-dom";
+import { Switch, Route, useLocation, Link } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { useDarkMode } from "./falcon.theme";
 
@@ -15,6 +15,7 @@ function App() {
     if (location.pathname.includes("map")) {
       toggleTheme();
     }
+    // eslint-disable-next-line
   }, [location]);
 
   return (
@@ -22,6 +23,7 @@ function App() {
       <CssBaseline />
       <Switch>
         <Suspense fallback={""}>
+          <Route component={MainRoutes} path="/" strict exact />
           <Route component={Map} path="/map" />
           <Route component={Dashboard} path="/dashboard" />
         </Suspense>
@@ -30,4 +32,17 @@ function App() {
   );
 }
 
+const MainRoutes = () => (
+  <>
+    <h2>Avaialable routes:</h2>
+    <ul>
+      <li>
+        <Link to="/map">/map</Link>
+      </li>
+      <li>
+        <Link to="/dashboard">/dashboard</Link>
+      </li>
+    </ul>
+  </>
+);
 export default App;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Drawer from "@material-ui/core/Drawer";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -9,12 +9,12 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import DataBox from "../data-box/DataBox";
 import clsx from "clsx";
 import useStyles from "./styles";
-import { FixedSizeList } from "react-window";
+import LocationsList from "./LocationList";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 export default function Sidebar({
   layer,
@@ -27,6 +27,12 @@ export default function Sidebar({
   handleChangeLayer,
 }) {
   const classes = useStyles();
+  const [tab, setTab] = useState(0);
+
+  const handleChangeTab = (event, newValue) => {
+    setTab(newValue);
+  };
+
   const {
     totalOrders,
     maintenances = [],
@@ -50,34 +56,41 @@ export default function Sidebar({
       <div className={classes.toolbar}>
         <img src={FalconEye} className={classes.logo} alt="Falconeye logo" />
       </div>
+      <Grid item md={12} container justify="center">
+        <Tabs
+          value={tab}
+          onChange={handleChangeTab}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab label="Económico" />
+          <Tab label="Técnico" />
+        </Tabs>
+      </Grid>
+      <Divider variant="middle" />
       <Grid item md={12} container justify="flex-end">
         <FormControl component="fieldset" className={classes.fieldset}>
-          <RadioGroup
-            row
-            aria-label="layers"
-            name="layers"
-            value={layer}
-            onChange={handleChangeLayer}
-          >
-            <FormControlLabel
-              classes={{ label: classes.radio }}
-              value="default"
-              control={<Radio size="small" color="primary" />}
-              label="General"
+          <TabPanel value={tab} index={0}>
+            <EconomicRadioGroup
+              {...{
+                classes,
+                economicLayers,
+                handleChangeLayer,
+                selectedLayer: layer,
+              }}
             />
-            <FormControlLabel
-              classes={{ label: classes.radio }}
-              value="monetary-range"
-              control={<Radio size="small" color="primary" />}
-              label="Monetario"
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
+            <TechnicalRadioGroup
+              {...{
+                classes,
+                technicalLayers,
+                handleChangeLayer,
+                selectedLayer: layer,
+              }}
             />
-            <FormControlLabel
-              classes={{ label: classes.radio }}
-              value="orders-range"
-              control={<Radio size="small" color="primary" />}
-              label="Asistencias"
-            />
-          </RadioGroup>
+          </TabPanel>
         </FormControl>
       </Grid>
       <Divider variant="middle" />
@@ -210,129 +223,79 @@ export default function Sidebar({
   );
 }
 
-const renderRow = (props) => (tableProps) => {
-  // console.log('{props, tableProps}', {props, tableProps});
-  const { classes, maintenances } = props;
-  const { index, style } = tableProps;
-  const {
-    id,
-    mainStreet,
-    secondStreet,
-    corrective,
-    preventive,
-    equipments,
-    materials,
-    services,
-    intersectionID,
-    engineering,
-  } = maintenances[index];
-
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
   return (
-    <ListItem dense divider button style={style} key={id}>
-      <Grid container spacing={2}>
-        <Grid item container md={4}>
-          <ListItemText
-            primary={
-              <>
-                <Typography align="left" variant="caption">
-                  {intersectionID}
-                </Typography>
-                <Typography align="left" variant="body2">
-                  {mainStreet}
-                </Typography>
-              </>
-            }
-            secondary={secondStreet}
-          />
-        </Grid>
-        <Grid
-          item
-          md={4}
-          container
-          justify="center"
-          className={classes.leftBox}
-          direction="column"
-        >
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="C"
-            style={{
-              color: classes.corrective,
-            }}
-            number={corrective}
-          />
-
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="I"
-            style={{
-              color: classes.engineering,
-            }}
-            number={engineering}
-          />
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="P"
-            style={{
-              color: classes.preventive,
-            }}
-            number={preventive}
-          />
-        </Grid>
-        <Grid item md={4} justify="center" container direction="column">
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="E"
-            style={{
-              color: classes.equipment,
-            }}
-            number={equipments}
-          />
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="M"
-            style={{
-              color: classes.materials,
-            }}
-            number={materials}
-          />
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="S"
-            style={{
-              color: classes.services,
-            }}
-            number={services}
-          />
-        </Grid>
-      </Grid>
-    </ListItem>
-  );
-};
-
-function LocationsList({ classes, maintenances, isDefault }) {
-  return (
-    <div className={classes.list}>
-      <FixedSizeList
-        height={1600}
-        width={"100%"}
-        itemSize={100}
-        itemCount={maintenances.length}
-      >
-        {renderRow({ classes, maintenances, isDefault })}
-      </FixedSizeList>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && children}
     </div>
+  );
+}
+
+const economicLayers = [
+  { value: "default", label: "General" },
+  { value: "monetary-range", label: "Monetario" },
+  { value: "orders-range", label: "Asistencias" },
+];
+
+const technicalLayers = [
+  { value: "default-tech", label: "General" },
+  { value: "pending-exec-range", label: "Pendiente ejecución" },
+  { value: "pending-auth-range", label: "Pendiente de autorización" },
+  { value: "pending-appr-range", label: "Pendiente de aprobación" },
+];
+
+function EconomicRadioGroup({
+  classes,
+  selectedLayer,
+  handleChangeLayer,
+  economicLayers = [],
+}) {
+  return (
+    <RadioGroup
+      row
+      name="layers"
+      aria-label="economic-layers"
+      value={selectedLayer}
+      onChange={handleChangeLayer}
+    >
+      {economicLayers.map((layer, index) => (
+        <FormControlLabel
+          key={index}
+          classes={{ label: classes.radio }}
+          value={layer.value}
+          control={<Radio size="small" color="primary" />}
+          label={layer.label}
+        />
+      ))}
+    </RadioGroup>
+  );
+}
+
+function TechnicalRadioGroup({ selectedLayer, classes, handleChangeLayer }) {
+  return (
+    <RadioGroup
+      row
+      aria-label="layers"
+      name="technical-layers"
+      value={selectedLayer}
+      onChange={handleChangeLayer}
+    >
+      {technicalLayers.map((layer, index) => (
+        <FormControlLabel
+          key={index}
+          classes={{ label: classes.radio }}
+          value={layer.value}
+          control={<Radio size="small" color="primary" />}
+          label={layer.label}
+        />
+      ))}
+    </RadioGroup>
   );
 }
