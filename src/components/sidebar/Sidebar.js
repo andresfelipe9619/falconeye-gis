@@ -15,6 +15,7 @@ import useStyles from "./styles";
 import LocationsList from "./LocationList";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import { technicalLayers, economicLayers } from "../../utils";
 
 export default function Sidebar({
   layer,
@@ -237,19 +238,6 @@ function TabPanel(props) {
     </div>
   );
 }
-
-const economicLayers = [
-  { value: "default", label: "General" },
-  { value: "monetary-range", label: "Monetario" },
-  { value: "orders-range", label: "Asistencias" },
-];
-
-const technicalLayers = [
-  { value: "default-tech", label: "General" },
-  { value: "pending-exec-range", label: "Pendiente ejecución" },
-  { value: "pending-auth-range", label: "Pendiente de autorización" },
-  { value: "pending-appr-range", label: "Pendiente de aprobación" },
-];
 
 function EconomicRadioGroup({
   classes,

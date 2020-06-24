@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Sidebar from "../sidebar/Sidebar";
 import { Typography, LinearProgress } from "@material-ui/core";
-import { formatToUnits } from "../../utils";
+import { formatToUnits, technicalLayers } from "../../utils";
 import "./index.css";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -63,7 +63,6 @@ export default function Map() {
   }, []);
 
   const currentLayer = colorsData.find((c) => c.property === layer);
-  console.log("colorsData :>> ", colorsData);
   let currentLayerColors = {};
   if ((currentLayer || {}).sg_attributes) {
     currentLayerColors = currentLayer.sg_attributes.reduce(
@@ -79,9 +78,10 @@ export default function Map() {
     let { value } = event.target;
     setLayer(value);
   }, []);
-
-  const { ranges, maintenances, rangesOrder } = maintenancesData;
-  const isDefault = layer === "default";
+  console.log("layer", layer);
+  const { ranges, maintenances = [], rangesOrder } = maintenancesData;
+  const isDefault = layer.includes("default");
+  const isTechnicalRange = layer.includes("tech");
   const isMonetaryRange = layer === "monetary-range";
   let layerRange = isMonetaryRange ? ranges : rangesOrder;
   let rangeColors = [];
@@ -99,10 +99,11 @@ export default function Map() {
     );
   }
 
-  console.log("{rangeColors,rangeColorsName}", {
-    rangeColors,
-    rangeColorsName,
+  console.log("{isMonetaryRange, isTechnicalRange}", {
+    isMonetaryRange,
+    isTechnicalRange,
   });
+  const hasData = !!maintenances.length;
   return (
     <Grid container spacing={0}>
       <Grid item md={8}>
@@ -112,12 +113,14 @@ export default function Map() {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url={TILE_LAYER}
           />
-          {currentLayer && (
+          {hasData && (
             <MaintenancesMarkers
               {...{
+                layer,
                 classes,
                 isDefault,
                 layerRange,
+                isTechnicalRange,
                 maintenances,
                 rangeColorsName,
                 isMonetaryRange,
@@ -135,7 +138,7 @@ export default function Map() {
             </Typography>
           </div>
         )}
-        {!loading && currentLayer && (
+        {!loading && hasData && (
           <Sidebar
             layer={layer}
             isDefault={isDefault}
@@ -158,8 +161,10 @@ const between = (number) => (a, b) => {
 };
 
 const MaintenancesMarkers = ({
+  layer,
   classes,
   isDefault,
+  isTechnicalRange,
   rangeColorsName,
   layerRange = [],
   maintenances = [],
@@ -182,6 +187,7 @@ const MaintenancesMarkers = ({
       latitude,
       longitude,
       totalCosts,
+      fs_maintenance,
     } = maintenance;
     const primaryCosts = [
       {
@@ -221,15 +227,25 @@ const MaintenancesMarkers = ({
     let markerColor = undefined;
     let layerProp = isMonetaryRange ? totalCosts : orders;
     if (!isDefault) {
-      markerColor = layerRange.reduce((acc, rangeA, index) => {
-        let size = layerRange.length;
-        if (size - index <= 1) return acc;
-        let rangeB = layerRange[index + 1];
-        if (between(layerProp)(rangeA, rangeB)) {
-          return rangeColorsName[index];
-        }
-        return acc;
-      }, "");
+      if (isMonetaryRange) {
+        markerColor = layerRange.reduce((acc, rangeA, index) => {
+          let size = layerRange.length;
+          if (size - index <= 1) return acc;
+          let rangeB = layerRange[index + 1];
+          if (between(layerProp)(rangeA, rangeB)) {
+            return rangeColorsName[index];
+          }
+          return acc;
+        }, "");
+      }
+      if (isTechnicalRange) {
+        let techLayer = technicalLayers.find((l) => l.value === layer);
+        console.log("{techLayer, layer}", { techLayer, layer });
+        markerColor =
+          (fs_maintenance || {}).status === (techLayer || {}).name
+            ? "red"
+            : "blue";
+      }
     }
 
     return (

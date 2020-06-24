@@ -22,3 +22,28 @@ export const formatToAbbreviation = (number, precision = 2) => {
 
   return +(number / Math.pow(10, order * 3)).toFixed(precision) + suffix;
 };
+
+export const technicalLayers = [
+  { value: "default-tech", label: "General" },
+  {
+    value: "exec-range-tech",
+    name: "Espera de Ejecución",
+    label: "Pendiente ejecución",
+  },
+  {
+    value: "auth-range-tech",
+    name: "Aprobada",
+    label: "Pendiente de Autorización",
+  },
+  {
+    value: "appr-range-tech",
+    name: "Pendiente de Aprobación",
+    label: "Pendiente de Aprobación",
+  },
+];
+
+export const economicLayers = [
+  { value: "default", label: "General" },
+  { value: "monetary-range", label: "Monetario" },
+  { value: "orders-range", label: "Asistencias" },
+];
