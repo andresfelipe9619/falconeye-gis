@@ -8,12 +8,12 @@ const Map = lazy(() => import("./components/map/Map"));
 const Dashboard = lazy(() => import("./DashboardApp"));
 
 function App() {
-  const [theme, toggleTheme] = useDarkMode();
+  const [theme] = useDarkMode();
   const themeConfig = createMuiTheme(theme);
   const location = useLocation();
   useEffect(() => {
     if (location.pathname.includes("map")) {
-      toggleTheme();
+      // toggleTheme();
     }
     // eslint-disable-next-line
   }, [location]);

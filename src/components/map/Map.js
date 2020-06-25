@@ -45,6 +45,11 @@ export default function Map() {
   const [colorsData, setColorsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [layer, setLayer] = useState("default");
+  const [open, setOpen] = useState(true);
+
+  const handleDrawerOpen = () => setOpen(true);
+
+  const handleDrawerClose = () => setOpen(false);
 
   useEffect(() => {
     (async () => {
@@ -106,7 +111,7 @@ export default function Map() {
   const hasData = !!maintenances.length;
   return (
     <Grid container spacing={0}>
-      <Grid item md={8}>
+      <Grid item md={open ? 8 : 11}>
         {loading && <LinearProgress />}
         <LeafletMap className={classes.map} {...MAP_OPTIONS}>
           <TileLayer
@@ -130,7 +135,7 @@ export default function Map() {
           )}
         </LeafletMap>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={open ? 4 : 1}>
         {loading && (
           <div style={{ width: "100%", marginTop: 50, margin: "0px auto" }}>
             <Typography variant={"body1"}>
@@ -140,12 +145,15 @@ export default function Map() {
         )}
         {!loading && hasData && (
           <Sidebar
+            open={open}
             layer={layer}
             isDefault={isDefault}
             rangeColors={rangeColors}
             ranges={displayNameRanges}
             maintenancesData={maintenancesData}
             handleChangeLayer={handleChangeLayer}
+            handleDrawerOpen={handleDrawerOpen}
+            handleDrawerClose={handleDrawerClose}
             currentLayerColors={currentLayerColors}
           />
         )}
