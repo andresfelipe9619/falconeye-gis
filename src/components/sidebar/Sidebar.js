@@ -22,12 +22,14 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { technicalLayers, economicLayers } from "../../utils";
 
 export default function Sidebar({
+  tab,
   open,
   layer,
   ranges,
   loading,
   isDefault,
   rangeColors,
+  handleChangeTab,
   maintenancesData,
   handleDrawerOpen,
   handleDrawerClose,
@@ -35,11 +37,6 @@ export default function Sidebar({
   currentLayerColors,
 }) {
   const classes = useStyles();
-  const [tab, setTab] = useState(0);
-
-  const handleChangeTab = (event, newValue) => {
-    setTab(newValue);
-  };
 
   const {
     totalOrders,

@@ -46,7 +46,11 @@ export default function Map() {
   const [loading, setLoading] = useState(false);
   const [layer, setLayer] = useState("default");
   const [open, setOpen] = useState(true);
+  const [tab, setTab] = useState(0);
 
+  const handleChangeTab = (event, newValue) => {
+    setTab(newValue);
+  };
   const handleDrawerOpen = () => setOpen(true);
 
   const handleDrawerClose = () => setOpen(false);
@@ -92,14 +96,14 @@ export default function Map() {
   let rangeColors = [];
   let rangeColorsName = [];
   let displayNameRanges = [];
-  if ((currentLayer || {}).sg_numRanges) {
-    displayNameRanges = currentLayer.sg_numRanges.map(
+  if ((currentLayer || {}).sg_numranges) {
+    displayNameRanges = currentLayer.sg_numranges.map(
       ({ displayName }) => displayName
     );
-    rangeColors = currentLayer.sg_numRanges.map(
+    rangeColors = currentLayer.sg_numranges.map(
       ({ sg_markers: [marker] }) => marker.color
     );
-    rangeColorsName = currentLayer.sg_numRanges.map(
+    rangeColorsName = currentLayer.sg_numranges.map(
       ({ sg_markers: [marker] }) => marker.colorName.toLowerCase()
     );
   }
@@ -145,16 +149,20 @@ export default function Map() {
         )}
         {!loading && hasData && (
           <Sidebar
-            open={open}
-            layer={layer}
-            isDefault={isDefault}
-            rangeColors={rangeColors}
-            ranges={displayNameRanges}
-            maintenancesData={maintenancesData}
-            handleChangeLayer={handleChangeLayer}
-            handleDrawerOpen={handleDrawerOpen}
-            handleDrawerClose={handleDrawerClose}
-            currentLayerColors={currentLayerColors}
+            {...{
+              tab,
+              open,
+              layer,
+              isDefault,
+              rangeColors,
+              maintenancesData,
+              handleChangeTab,
+              handleChangeLayer,
+              handleDrawerOpen,
+              handleDrawerClose,
+              currentLayerColors,
+              ranges: displayNameRanges,
+            }}
           />
         )}
       </Grid>
