@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Map as LeafletMap, TileLayer } from "react-leaflet";
+import { useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Sidebar from "../sidebar/Sidebar";
@@ -24,6 +25,7 @@ const getColorsData = async () => {
 
 export default function Map() {
   const classes = useStyles();
+  const location = useLocation();
   const [maintenancesData, setMaintenancesData] = useState({});
   const [colorsData, setColorsData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -54,6 +56,13 @@ export default function Map() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    const isTech = location.pathname.includes("technical");
+    if (isTech) setLayer("default-tech");
+    else setLayer("default");
+    // eslint-disable-next-line
+  }, [location]);
 
   const currentLayer = colorsData.find((c) => c.property === layer);
   const currentLayerColors = getCurrentLayerColors(currentLayer);
@@ -123,6 +132,7 @@ export default function Map() {
               layer,
               isDefault,
               rangeColors,
+              isTechnicalRange,
               maintenancesData,
               handleChangeLayer,
               handleDrawerOpen,

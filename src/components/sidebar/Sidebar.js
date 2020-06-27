@@ -26,6 +26,7 @@ export default function Sidebar({
   loading,
   isDefault,
   rangeColors,
+  isTechnicalRange,
   maintenancesData,
   handleDrawerOpen,
   handleDrawerClose,
@@ -131,7 +132,7 @@ export default function Sidebar({
             <TabsRouter tabs={tabs} />
           </Grid>
           <Divider variant="middle" />
-          {!isDefault && rangeColors && (
+          {!isDefault && !isTechnicalRange && rangeColors && (
             <>
               <Grid
                 item
@@ -182,72 +183,80 @@ export default function Sidebar({
           </Grid>
           <Divider variant="middle" />
           <br />
-          <Grid item md={12} container spacing={2} className={classes.fieldset}>
+          {!isTechnicalRange && (
             <Grid
               item
-              md={6}
+              md={12}
               container
-              direction="column"
-              className={classes.leftBox}
+              spacing={2}
+              className={classes.fieldset}
             >
-              <DataBox
-                small
-                currency
-                text="Correctivos"
-                style={{
-                  color: currentLayerColors.corrective,
-                }}
-                number={totalCorrective}
-              />
-              <DataBox
-                small
-                currency
-                text="Ingeniería"
-                number={totalEngineering}
-                style={{
-                  color: currentLayerColors.engineering,
-                }}
-              />
-              <DataBox
-                small
-                currency
-                text="Preventivos"
-                number={totalPreventive}
-                style={{
-                  color: currentLayerColors.preventive,
-                }}
-              />
+              <Grid
+                item
+                md={6}
+                container
+                direction="column"
+                className={classes.leftBox}
+              >
+                <DataBox
+                  small
+                  currency
+                  text="Correctivos"
+                  style={{
+                    color: currentLayerColors.corrective,
+                  }}
+                  number={totalCorrective}
+                />
+                <DataBox
+                  small
+                  currency
+                  text="Ingeniería"
+                  number={totalEngineering}
+                  style={{
+                    color: currentLayerColors.engineering,
+                  }}
+                />
+                <DataBox
+                  small
+                  currency
+                  text="Preventivos"
+                  number={totalPreventive}
+                  style={{
+                    color: currentLayerColors.preventive,
+                  }}
+                />
+              </Grid>
+              <Grid item md={6} container direction="column">
+                <DataBox
+                  small
+                  currency
+                  text="Equipos"
+                  number={totalEquipments}
+                  style={{
+                    color: currentLayerColors.equipment,
+                  }}
+                />
+                <DataBox
+                  small
+                  currency
+                  text="Materiales"
+                  number={totalMaterials}
+                  style={{
+                    color: currentLayerColors.materials,
+                  }}
+                />
+                <DataBox
+                  small
+                  currency
+                  style={{
+                    color: currentLayerColors.services,
+                  }}
+                  text="Servicios"
+                  number={totalServices}
+                />
+              </Grid>
             </Grid>
-            <Grid item md={6} container direction="column">
-              <DataBox
-                small
-                currency
-                text="Equipos"
-                number={totalEquipments}
-                style={{
-                  color: currentLayerColors.equipment,
-                }}
-              />
-              <DataBox
-                small
-                currency
-                text="Materiales"
-                number={totalMaterials}
-                style={{
-                  color: currentLayerColors.materials,
-                }}
-              />
-              <DataBox
-                small
-                currency
-                style={{
-                  color: currentLayerColors.services,
-                }}
-                text="Servicios"
-                number={totalServices}
-              />
-            </Grid>
-          </Grid>
+          )}
           <br />
           {loading && <LinearProgress />}
           <Divider variant="middle" />
@@ -256,6 +265,7 @@ export default function Sidebar({
               {...{
                 classes: { ...classes, ...currentLayerColors },
                 maintenances,
+                isTechnicalRange,
                 isDefault,
               }}
             />

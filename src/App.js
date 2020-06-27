@@ -1,6 +1,6 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { Switch, Route, useLocation, Link } from "react-router-dom";
+import { Switch, Route, Link } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { useDarkMode } from "./falcon.theme";
 
@@ -10,13 +10,6 @@ const Dashboard = lazy(() => import("./DashboardApp"));
 function App() {
   const [theme] = useDarkMode();
   const themeConfig = createMuiTheme(theme);
-  const location = useLocation();
-  useEffect(() => {
-    if (location.pathname.includes("map")) {
-      // toggleTheme();
-    }
-    // eslint-disable-next-line
-  }, [location]);
 
   return (
     <MuiThemeProvider theme={themeConfig}>

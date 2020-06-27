@@ -27,17 +27,14 @@ export const technicalLayers = [
   { value: "default-tech", label: "General" },
   {
     value: "exec-range-tech",
-    name: "Espera de Ejecución",
-    label: "Pendiente ejecución",
+    label: "Pendiente Ejecución",
   },
   {
     value: "auth-range-tech",
-    name: "Aprobada",
     label: "Pendiente de Autorización",
   },
   {
     value: "appr-range-tech",
-    name: "Pendiente de Aprobación",
     label: "Pendiente de Aprobación",
   },
 ];

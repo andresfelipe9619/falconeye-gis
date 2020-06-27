@@ -8,10 +8,11 @@ import Typography from "@material-ui/core/Typography";
 
 const renderRow = (props) => (tableProps) => {
   // console.log('{props, tableProps}', {props, tableProps});
-  const { classes, maintenances } = props;
+  const { classes, maintenances, isTechnicalRange } = props;
   const { index, style } = tableProps;
   const {
     id,
+    orders,
     mainStreet,
     secondStreet,
     corrective,
@@ -26,7 +27,7 @@ const renderRow = (props) => (tableProps) => {
   return (
     <ListItem dense divider button style={style} key={id}>
       <Grid container spacing={2}>
-        <Grid item container md={4}>
+        <Grid item container md={isTechnicalRange ? 6 : 4}>
           <ListItemText
             primary={
               <>
@@ -41,84 +42,117 @@ const renderRow = (props) => (tableProps) => {
             secondary={secondStreet}
           />
         </Grid>
-        <Grid
-          item
-          md={4}
-          container
-          justify="center"
-          className={classes.leftBox}
-          direction="column"
-        >
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="C"
-            style={{
-              color: classes.corrective,
+        {isTechnicalRange && (
+          <Grid item container md={6} alignItems="center">
+            <Typography variant={"body2"}>Órdenes: {orders || 0}</Typography>
+          </Grid>
+        )}
+        {!isTechnicalRange && (
+          <ActivityTypes
+            {...{
+              classes,
+              corrective,
+              engineering,
+              preventive,
+              equipments,
+              materials,
+              services,
             }}
-            number={corrective}
           />
-
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="I"
-            style={{
-              color: classes.engineering,
-            }}
-            number={engineering}
-          />
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="P"
-            style={{
-              color: classes.preventive,
-            }}
-            number={preventive}
-          />
-        </Grid>
-        <Grid item md={4} justify="center" container direction="column">
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="E"
-            style={{
-              color: classes.equipment,
-            }}
-            number={equipments}
-          />
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="M"
-            style={{
-              color: classes.materials,
-            }}
-            number={materials}
-          />
-          <DataBox
-            small
-            currency
-            shortLabel
-            text="S"
-            style={{
-              color: classes.services,
-            }}
-            number={services}
-          />
-        </Grid>
+        )}
       </Grid>
     </ListItem>
   );
 };
 
-export default function LocationsList({ classes, maintenances, isDefault }) {
+function ActivityTypes({
+  classes,
+  corrective,
+  engineering,
+  preventive,
+  equipments,
+  materials,
+  services,
+}) {
+  return (
+    <>
+      <Grid
+        item
+        md={4}
+        container
+        justify="center"
+        className={classes.leftBox}
+        direction="column"
+      >
+        <DataBox
+          small
+          currency
+          shortLabel
+          text="C"
+          style={{
+            color: classes.corrective,
+          }}
+          number={corrective}
+        />
+
+        <DataBox
+          small
+          currency
+          shortLabel
+          text="I"
+          style={{
+            color: classes.engineering,
+          }}
+          number={engineering}
+        />
+        <DataBox
+          small
+          currency
+          shortLabel
+          text="P"
+          style={{
+            color: classes.preventive,
+          }}
+          number={preventive}
+        />
+      </Grid>
+      <Grid item md={4} justify="center" container direction="column">
+        <DataBox
+          small
+          currency
+          shortLabel
+          text="E"
+          style={{
+            color: classes.equipment,
+          }}
+          number={equipments}
+        />
+        <DataBox
+          small
+          currency
+          shortLabel
+          text="M"
+          style={{
+            color: classes.materials,
+          }}
+          number={materials}
+        />
+        <DataBox
+          small
+          currency
+          shortLabel
+          text="S"
+          style={{
+            color: classes.services,
+          }}
+          number={services}
+        />
+      </Grid>
+    </>
+  );
+}
+
+export default function LocationsList({ classes, maintenances, ...props }) {
   return (
     <div className={classes.list}>
       <FixedSizeList
@@ -127,7 +161,7 @@ export default function LocationsList({ classes, maintenances, isDefault }) {
         itemSize={100}
         itemCount={maintenances.length}
       >
-        {renderRow({ classes, maintenances, isDefault })}
+        {renderRow({ classes, maintenances, ...props })}
       </FixedSizeList>
     </div>
   );

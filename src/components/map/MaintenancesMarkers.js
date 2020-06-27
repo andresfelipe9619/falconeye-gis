@@ -83,12 +83,16 @@ const MaintenancesMarkers = ({
         }, "");
       }
       if (isTechnicalRange) {
-        let techLayer = technicalLayers.find((l) => l.value === layer);
-        console.log("{techLayer, layer}", { techLayer, layer });
+        const techLayer = technicalLayers.find((l) => l.value === layer);
+        const withStatusColor = rangeColorsName[1] || "red";
+        const withoutStatusColor = rangeColorsName[0] || "blue";
+        const maintenancesStatus = (fs_maintenance || {}).status;
+        const techLayerName = (techLayer || {}).name;
+
         markerColor =
-          (fs_maintenance || {}).status === (techLayer || {}).name
-            ? "red"
-            : "blue";
+          maintenancesStatus === techLayerName
+            ? withStatusColor
+            : withoutStatusColor;
       }
     }
 
@@ -109,13 +113,17 @@ const MaintenancesMarkers = ({
           <hr />
           <Typography variant={"body2"}>Órdenes: {orders || 0}</Typography>
           <hr />
-          <CostsList costs={primaryCosts} />
-          <hr />
-          <CostsList costs={secondaryCosts} />
-          <hr />
-          <Typography align="center" variant={"body2"}>
-            Total: {formatToUnits(totalCosts)}
-          </Typography>
+          {!isTechnicalRange && (
+            <>
+              <CostsList costs={primaryCosts} />
+              <hr />
+              <CostsList costs={secondaryCosts} />
+              <hr />
+              <Typography align="center" variant={"body2"}>
+                Total: {formatToUnits(totalCosts)}
+              </Typography>
+            </>
+          )}
         </Popup>
       </Marker>
     );
