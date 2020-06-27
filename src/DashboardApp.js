@@ -19,7 +19,7 @@ import AssessmentIcon from "@material-ui/icons/Assessment";
 import Dashboard from "./components/dashboard/Dashboard";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import BusinessCenterIcon from "@material-ui/icons/BusinessCenter";
-import FalconLogo from "./falconeye.ico";
+import FalconLogo from "./SmartCity.png";
 import { getDsLayers } from "./api";
 
 export default function App() {
@@ -77,8 +77,8 @@ export default function App() {
             <MenuIcon />
           </IconButton>
           <img src={FalconLogo} alt="Falconeye logo" className={classes.logo} />
-          <Typography variant="h6" noWrap>
-            FALCONEYE
+          <Typography variant="h6" color="primary" noWrap>
+            SMARTCITY
           </Typography>
         </Toolbar>
       </AppBar>
@@ -143,6 +143,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   appBar: {
+    backgroundColor: theme.palette.common.white,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -170,9 +171,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
   },
   logo: {
-    width: 40,
+    width: 50,
     height: "auto",
-    margin: 10,
   },
   footer: {
     flexGrow: 1,

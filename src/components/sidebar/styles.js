@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-const drawerWidthMD = 430;
-const drawerWidthLG = "33.333%";
+const drawerWidthMD = 410;
+const drawerWidthLG = "25%";
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -58,8 +58,8 @@ const useStyles = makeStyles((theme) => ({
     padding: 5,
   },
   logo: {
-    height: "auto",
-    width: 120,
+    height: 80,
+    width: 100,
   },
   radio: {
     fontSize: 12,

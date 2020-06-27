@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Drawer from "@material-ui/core/Drawer";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FalconEye from "./falconeye.png";
+import FalconLogo from "../../SmartCity.png";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -15,21 +15,17 @@ import DataBox from "../data-box/DataBox";
 import clsx from "clsx";
 import useStyles from "./styles";
 import LocationsList from "./LocationList";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-
+import TabsRouter from "./TabsRouter";
 import { technicalLayers, economicLayers } from "../../utils";
 
 export default function Sidebar({
-  tab,
   open,
   layer,
   ranges,
   loading,
   isDefault,
   rangeColors,
-  handleChangeTab,
   maintenancesData,
   handleDrawerOpen,
   handleDrawerClose,
@@ -48,6 +44,37 @@ export default function Sidebar({
     totalPreventive,
     totalEngineering,
   } = maintenancesData;
+
+  const tabs = [
+    {
+      to: "/economic",
+      label: "Económico",
+      render: () => (
+        <EconomicRadioGroup
+          {...{
+            classes,
+            economicLayers,
+            handleChangeLayer,
+            selectedLayer: layer,
+          }}
+        />
+      ),
+    },
+    {
+      to: "/technical",
+      label: "Técnico",
+      render: () => (
+        <TechnicalRadioGroup
+          {...{
+            classes,
+            technicalLayers,
+            handleChangeLayer,
+            selectedLayer: layer,
+          }}
+        />
+      ),
+    },
+  ];
   return (
     <Drawer
       onMouseLeave={handleDrawerClose}
@@ -65,67 +92,43 @@ export default function Sidebar({
       }}
       anchor="right"
     >
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        onClick={handleDrawerOpen}
-        edge="start"
-        className={clsx(classes.menuButton, {
-          [classes.hide]: open,
-        })}
-      >
-        <MenuIcon />
-      </IconButton>
-      <IconButton
-        onClick={handleDrawerClose}
-        className={clsx(classes.menuButton, {
-          [classes.hide]: !open,
-        })}
-      >
-        <ChevronRightIcon />
-      </IconButton>
-      <div className={classes.toolbar}>
-        <img src={FalconEye} className={classes.logo} alt="Falconeye logo" />
-      </div>
-
+      <Grid item md={12} container justify="center" className={classes.toolbar}>
+        <Grid item md={1} container>
+          <IconButton
+            color="primary"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: open,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
+          <IconButton
+            color="primary"
+            onClick={handleDrawerClose}
+            className={clsx(classes.menuButton, {
+              [classes.hide]: !open,
+            })}
+          >
+            <ChevronRightIcon />
+          </IconButton>
+        </Grid>
+        {open && (
+          <Grid item md={11} container justify="center">
+            <img
+              src={FalconLogo}
+              className={classes.logo}
+              alt="Falconeye logo"
+            />
+          </Grid>
+        )}
+      </Grid>
       {open ? (
         <>
           <Grid item md={12} container justify="center">
-            <Tabs
-              value={tab}
-              onChange={handleChangeTab}
-              indicatorColor="primary"
-              textColor="primary"
-              centered
-            >
-              <Tab label="Económico" />
-              <Tab label="Técnico" />
-            </Tabs>
-          </Grid>
-          <Divider variant="middle" />
-          <Grid item md={12} container justify="flex-end">
-            <FormControl component="fieldset" className={classes.fieldset}>
-              <TabPanel value={tab} index={0}>
-                <EconomicRadioGroup
-                  {...{
-                    classes,
-                    economicLayers,
-                    handleChangeLayer,
-                    selectedLayer: layer,
-                  }}
-                />
-              </TabPanel>
-              <TabPanel value={tab} index={1}>
-                <TechnicalRadioGroup
-                  {...{
-                    classes,
-                    technicalLayers,
-                    handleChangeLayer,
-                    selectedLayer: layer,
-                  }}
-                />
-              </TabPanel>
-            </FormControl>
+            <TabsRouter tabs={tabs} />
           </Grid>
           <Divider variant="middle" />
           {!isDefault && rangeColors && (
@@ -179,7 +182,7 @@ export default function Sidebar({
           </Grid>
           <Divider variant="middle" />
           <br />
-          <Grid item md={12} container spacing={4} className={classes.fieldset}>
+          <Grid item md={12} container spacing={2} className={classes.fieldset}>
             <Grid
               item
               md={6}
@@ -263,21 +266,6 @@ export default function Sidebar({
   );
 }
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && children}
-    </div>
-  );
-}
-
 function EconomicRadioGroup({
   classes,
   selectedLayer,
@@ -285,44 +273,48 @@ function EconomicRadioGroup({
   economicLayers = [],
 }) {
   return (
-    <RadioGroup
-      row
-      name="layers"
-      aria-label="economic-layers"
-      value={selectedLayer}
-      onChange={handleChangeLayer}
-    >
-      {economicLayers.map((layer, index) => (
-        <FormControlLabel
-          key={index}
-          classes={{ label: classes.radio }}
-          value={layer.value}
-          control={<Radio size="small" color="primary" />}
-          label={layer.label}
-        />
-      ))}
-    </RadioGroup>
+    <FormControl component="fieldset" className={classes.fieldset}>
+      <RadioGroup
+        row
+        name="layers"
+        aria-label="economic-layers"
+        value={selectedLayer}
+        onChange={handleChangeLayer}
+      >
+        {economicLayers.map((layer, index) => (
+          <FormControlLabel
+            key={index}
+            classes={{ label: classes.radio }}
+            value={layer.value}
+            control={<Radio size="small" color="primary" />}
+            label={layer.label}
+          />
+        ))}
+      </RadioGroup>
+    </FormControl>
   );
 }
 
 function TechnicalRadioGroup({ selectedLayer, classes, handleChangeLayer }) {
   return (
-    <RadioGroup
-      row
-      aria-label="layers"
-      name="technical-layers"
-      value={selectedLayer}
-      onChange={handleChangeLayer}
-    >
-      {technicalLayers.map((layer, index) => (
-        <FormControlLabel
-          key={index}
-          classes={{ label: classes.radio }}
-          value={layer.value}
-          control={<Radio size="small" color="primary" />}
-          label={layer.label}
-        />
-      ))}
-    </RadioGroup>
+    <FormControl component="fieldset" className={classes.fieldset}>
+      <RadioGroup
+        row
+        aria-label="layers"
+        name="technical-layers"
+        value={selectedLayer}
+        onChange={handleChangeLayer}
+      >
+        {technicalLayers.map((layer, index) => (
+          <FormControlLabel
+            key={index}
+            classes={{ label: classes.radio }}
+            value={layer.value}
+            control={<Radio size="small" color="primary" />}
+            label={layer.label}
+          />
+        ))}
+      </RadioGroup>
+    </FormControl>
   );
 }

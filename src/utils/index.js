@@ -47,3 +47,9 @@ export const economicLayers = [
   { value: "monetary-range", label: "Monetario" },
   { value: "orders-range", label: "Asistencias" },
 ];
+
+export const between = (number) => (a, b) => {
+  let min = Math.min.apply(Math, [a, b]);
+  let max = Math.max.apply(Math, [a, b]);
+  return number >= min && number <= max;
+};

@@ -35,12 +35,7 @@ export const CurrencyBox = ({ text, number, style, small, shortLabel }) => (
   <Grid container spacing={0} alignItems="center">
     {text && (
       <Grid item md={shortLabel ? 2 : 6}>
-        <Typography
-          align="left"
-          style={style}
-          component="h3"
-          variant="body2"
-        >
+        <Typography align="left" style={style} component="h3" variant="body2">
           {text}
         </Typography>
       </Grid>

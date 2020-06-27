@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const primaryColor = "#b2993e";
+const primaryColor = "#bf1d2e";
 const primaryGray = "rgba(85, 85, 85, 1)";
 
 const FalconPalette = {
@@ -27,6 +27,9 @@ const FalconPalette = {
 
 const FalconTheme = {
   palette: FalconPalette,
+  typography: {
+    fontSize: 12,
+  },
 };
 
 export function useDarkMode() {
