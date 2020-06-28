@@ -71,17 +71,6 @@ const MaintenancesMarkers = ({
     let markerColor = undefined;
     let layerProp = isMonetaryRange ? totalCosts : orders;
     if (!isDefault) {
-      if (isMonetaryRange) {
-        markerColor = layerRange.reduce((acc, rangeA, index) => {
-          let size = layerRange.length;
-          if (size - index <= 1) return acc;
-          let rangeB = layerRange[index + 1];
-          if (between(layerProp)(rangeA, rangeB)) {
-            return rangeColorsName[index];
-          }
-          return acc;
-        }, "");
-      }
       if (isTechnicalRange) {
         const techLayer = technicalLayers.find((l) => l.value === layer);
         const withStatusColor = rangeColorsName[1] || "red";
@@ -93,6 +82,16 @@ const MaintenancesMarkers = ({
           maintenancesStatus === techLayerName
             ? withStatusColor
             : withoutStatusColor;
+      } else {
+        markerColor = layerRange.reduce((acc, rangeA, index) => {
+          let size = layerRange.length;
+          if (size - index <= 1) return acc;
+          let rangeB = layerRange[index + 1];
+          if (between(layerProp)(rangeA, rangeB)) {
+            return rangeColorsName[index];
+          }
+          return acc;
+        }, "");
       }
     }
 
