@@ -26,7 +26,7 @@ export const formatToAbbreviation = (number, precision = 2) => {
 export const technicalLayers = [
   { value: "default-tech", label: "General" },
   {
-    value: "exec-range-tech",
+    value: "pending-exec-range-tech",
     label: "Pendiente Ejecución",
   },
   {
@@ -36,6 +36,10 @@ export const technicalLayers = [
   {
     value: "appr-range-tech",
     label: "Pendiente de Aprobación",
+  },
+  {
+    value: "exec-range-tech",
+    label: "Ejecutada",
   },
 ];
 

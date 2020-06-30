@@ -76,7 +76,7 @@ const MaintenancesMarkers = ({
         const withStatusColor = rangeColorsName[1] || "red";
         const withoutStatusColor = rangeColorsName[0] || "blue";
         const maintenancesStatus = (fs_maintenance || {}).status;
-        const techLayerName = (techLayer || {}).name;
+        const techLayerName = (techLayer || {}).label;
 
         markerColor =
           maintenancesStatus === techLayerName
