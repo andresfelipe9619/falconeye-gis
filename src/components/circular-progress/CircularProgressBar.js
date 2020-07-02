@@ -7,8 +7,8 @@ const styles = {
   root: {
     textAlign: "center",
     position: "relative",
-    width: 300,
-    height: 250,
+    width: 160,
+    height: 132,
     margin: "0px auto",
   },
   overlay: {
@@ -21,7 +21,7 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#4caf50",
     textAlign: "center",

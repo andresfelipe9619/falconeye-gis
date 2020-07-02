@@ -9,7 +9,7 @@ import { formatToUnits, formatToAbbreviation } from "../../utils";
 
 const useStyles = makeStyles(() => ({
   container: {
-    height: "500px",
+    height: 250,
   },
   card: { minWidth: "100%" },
   bold: { fontWeight: "bold" },
@@ -25,13 +25,13 @@ export default function TecnicChart({ style, data, economic }) {
       md={12}
       style={{
         background: "white",
-        marginTop: 25,
+        marginTop: 10,
         marginRight: 20,
         ...style,
       }}
     >
       <Card raised style={{ width: "100%" }}>
-        <div style={{ marginTop: "10px" }}>
+        <div style={{ marginTop: "5px" }}>
           <Typography
             style={{ fontWeight: "bold" }}
             variant="h5"
@@ -46,7 +46,7 @@ export default function TecnicChart({ style, data, economic }) {
             <ResponsiveLine
               data={data}
               yFormat={economic ? formatToUnits : undefined}
-              margin={{ top: 20, right: 110, bottom: 80, left: 60 }}
+              margin={{ top: 20, right: 80, bottom: 60, left: 60 }}
               xScale={{ type: "point" }}
               yScale={{
                 type: "linear",
@@ -86,7 +86,7 @@ export default function TecnicChart({ style, data, economic }) {
               pointBorderColor={{ from: "serieColor" }}
               pointLabel="y"
               pointLabelYOffset={-12}
-              useMesh={true}
+              useMesh
               legends={[
                 {
                   anchor: "bottom",

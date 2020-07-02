@@ -26,20 +26,28 @@ export const formatToAbbreviation = (number, precision = 2) => {
 export const technicalLayers = [
   { value: "default-tech", label: "General" },
   {
-    value: "pending-exec-range-tech",
-    label: "Pendiente Ejecución",
-  },
-  {
     value: "auth-range-tech",
     label: "Pendiente de Autorización",
   },
   {
-    value: "appr-range-tech",
-    label: "Pendiente de Aprobación",
+    value: "pending-exec-range-tech",
+    label: "Pendiente Ejecución",
   },
   {
     value: "exec-range-tech",
     label: "Ejecutada",
+  },
+  {
+    value: "pending-valid-range-tech",
+    label: "Pendiente de Validación",
+  },
+  {
+    value: "valid-range-tech",
+    label: "Validada",
+  },
+  {
+    value: "pending-appr-range-tech",
+    label: "Pendiente de Aprobación",
   },
 ];
 

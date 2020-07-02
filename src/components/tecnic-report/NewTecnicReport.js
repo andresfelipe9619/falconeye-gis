@@ -4,15 +4,20 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import TecnicChart from "./TecnicChart";
 import CircularProgressBar from "../circular-progress/CircularProgressBar";
 import Card from "@material-ui/core/Card";
+import { makeStyles } from "@material-ui/core/styles";
 import CardContent from "@material-ui/core/CardContent";
-import { Divider } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import AssistsRanking from "./AssistsRanking";
+import DividedCard from "../data-box/DividedCard";
+
+const colors = { con: "#f44336", pro: "#4caf50" };
 
 export default function NewTecnicReport(props) {
   const { getData } = props;
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
+  const classes = useStyles();
+
   useEffect(() => {
     (async () => {
       try {
@@ -28,64 +33,10 @@ export default function NewTecnicReport(props) {
   }, []);
 
   if (loading) return <LinearProgress />;
-  const colors = { con: "#f44336", pro: "#4caf50" };
   return (
-    <Grid container spacing={4} justify="center">
+    <Grid container spacing={2} justify="center">
       <Grid container spacing={0} item md={12} justify="space-around">
-        {((data || {}).pieData || []).map(
-          (
-            {
-              proName,
-              conName,
-              pendingValue,
-              proPercentage = 0,
-              proCount = 0,
-              conCount = 0,
-            },
-            index
-          ) => {
-            if (!proName && !conName) return null;
-            return (
-              <Grid
-                item
-                md={4}
-                container
-                key={index}
-                spacing={1}
-                diirection="column"
-              >
-                <DividedCard above={conName} below={proName} hasColors />
-                <Grid item md={12}>
-                  <Card style={{ overflow: "visible" }} raised>
-                    <CardContent>
-                      <CircularProgressBar
-                        colors={colors}
-                        data={[
-                          {
-                            id: "pro",
-                            label: proName,
-                            value: proCount,
-                          },
-                          {
-                            id: "con",
-                            label: conName,
-                            value: conCount,
-                          },
-                        ]}
-                        text={`${proPercentage}%`}
-                      />
-                    </CardContent>
-                  </Card>
-                </Grid>
-                <DividedCard
-                  above={"Pendiente"}
-                  below={pendingValue}
-                  hasNumber
-                />
-              </Grid>
-            );
-          }
-        )}
+        <PieCharts data={data} />
       </Grid>
       <TecnicChart
         style={{ marginLeft: 15, marginRight: 25 }}
@@ -100,7 +51,7 @@ export default function NewTecnicReport(props) {
                   variant="h5"
                   component="h2"
                   align="center"
-                  style={numberStyle}
+                  className={classes.bold}
                 >
                   Ranking de Asistencias
                 </Typography>
@@ -123,44 +74,53 @@ export default function NewTecnicReport(props) {
   );
 }
 
-const DividedCard = ({ above, below, hasNumber, hasColors }) => (
-  <Grid item md={12}>
-    <Card raised>
-      <CardContent>
-        <Typography
-          align="center"
-          variant="h3"
-          gutterBottom
-          style={{ ...titleStyle, ...(hasColors ? colorRed : null) }}
-        >
-          {above}
-        </Typography>
-        <Divider />
-        {hasNumber ? (
-          <Typography align="center" variant="h3" style={numberStyle}>
-            {below}
-          </Typography>
-        ) : (
-          <Typography
-            align="center"
-            variant="h3"
-            style={{ ...titleStyle, ...(hasColors ? colorGreen : null) }}
-          >
-            {below}
-          </Typography>
-        )}
-      </CardContent>
-    </Card>
-  </Grid>
-);
+const PieCharts = ({ data }) =>
+  ((data || {}).pieData || []).map(
+    (
+      {
+        proName,
+        conName,
+        pendingValue,
+        proPercentage = 0,
+        proCount = 0,
+        conCount = 0,
+      },
+      index
+    ) => {
+      if (!proName && !conName) return null;
+      return (
+        <Grid item md={4} container key={index} spacing={1}>
+          <DividedCard above={conName} below={proName} hasColors />
+          <Grid item md={12}>
+            <Card style={{ overflow: "visible" }} raised>
+              <CardContent>
+                <CircularProgressBar
+                  colors={colors}
+                  data={[
+                    {
+                      id: "pro",
+                      label: proName,
+                      value: proCount,
+                    },
+                    {
+                      id: "con",
+                      label: conName,
+                      value: conCount,
+                    },
+                  ]}
+                  text={`${proPercentage}%`}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+          <DividedCard above={"Pendiente"} below={pendingValue} hasNumber />
+        </Grid>
+      );
+    }
+  );
 
-const numberStyle = {
-  fontSize: 20,
-  marginTop: 10,
-  fontWeight: "bold",
-};
-
-const colorGreen = { color: "#4caf50", fontWeight: "bold" };
-const colorRed = { color: "#f44336", fontWeight: "bold" };
-
-const titleStyle = { fontSize: 18, marginTop: 10 };
+const useStyles = makeStyles(() => ({
+  title: { fontSize: 16, marginTop: 5 },
+  bold: { fontWeight: "bold" },
+  number: { fontSize: 14, marginTop: 5, fontWeight: "bold" },
+}));

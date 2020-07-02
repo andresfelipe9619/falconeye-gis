@@ -4,12 +4,12 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import CircularProgressBar from "../circular-progress/CircularProgressBar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { Divider } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import AssistsRanking from "../tecnic-report/AssistsRanking";
 import MarkedBarChart from "../mark-bar-chart/MarkedBarChart";
 import { formatToUnits } from "../../utils";
 import TecnicChart from "../tecnic-report/TecnicChart";
+import DividedCard from "../data-box/DividedCard";
 
 export default function NewEconomicReport(props) {
   const { getData } = props;
@@ -33,9 +33,9 @@ export default function NewEconomicReport(props) {
   console.log("data", data);
   return (
     <Grid container spacing={2}>
-      <Grid container item md={5} direction="column" justify="space-between">
+      <Grid container item md={5}>
         {((data || {}).barData || []).map((item, i) => (
-          <Grid container key={i}>
+          <Grid container spacing={1} key={i}>
             <MarkedBarChart
               data={item.data}
               title={item.id}
@@ -47,52 +47,62 @@ export default function NewEconomicReport(props) {
         ))}
       </Grid>
 
-      <Grid container item md={7} spacing={1} justify="space-between">
-        {((data || {}).pieData || []).map(
-          (
-            { proName, conName, proPercentage = 0, proCount = 0, conCount = 0 },
-            index
-          ) => (
-            <Grid
-              item
-              md={6}
-              container
-              key={index}
-              spacing={1}
-              diirection="column"
-            >
-              <DividedCard above={conName} below={proName} hasColors />
-              <Grid item md={12}>
-                <Card style={{ overflow: "visible" }} raised>
-                  <CardContent>
-                    <CircularProgressBar
-                      economic
-                      colors={{ con: "#f44336", pro: "#4caf50" }}
-                      data={[
-                        {
-                          id: "pro",
-                          label: proName,
-                          value: proCount,
-                        },
-                        {
-                          id: "con",
-                          label: conName,
-                          value: conCount,
-                        },
-                      ]}
-                      text={`${proPercentage}%`}
-                    />
-                  </CardContent>
-                </Card>
+      <Grid container item md={7} spacing={1}>
+        <Grid
+          container
+          item
+          md={12}
+          style={{ height: "fit-content" }}
+          spacing={3}
+        >
+          {((data || {}).pieData || []).map(
+            (
+              {
+                proName,
+                conName,
+                proPercentage = 0,
+                proCount = 0,
+                conCount = 0,
+              },
+              index
+            ) => (
+              <Grid item md={6} key={index} style={{ height: "fit-content" }}>
+                <DividedCard above={conName} below={proName} hasColors />
+                <Grid item md={12}>
+                  <Card
+                    style={{ overflow: "visible", margin: "10px 0px" }}
+                    raised
+                  >
+                    <CardContent>
+                      <CircularProgressBar
+                        economic
+                        colors={{ con: "#f44336", pro: "#4caf50" }}
+                        data={[
+                          {
+                            id: "pro",
+                            label: proName,
+                            value: proCount,
+                          },
+                          {
+                            id: "con",
+                            label: conName,
+                            value: conCount,
+                          },
+                        ]}
+                        text={`${proPercentage}%`}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <DividedCard
+                  above={"Disponibilidad"}
+                  below={formatToUnits(conCount - proCount)}
+                  hasNumber
+                />
               </Grid>
-              <DividedCard
-                above={"Disponibilidad"}
-                below={formatToUnits(conCount - proCount)}
-                hasNumber
-              />
-            </Grid>
-          )
-        )}
+            )
+          )}
+        </Grid>
       </Grid>
       <TecnicChart economic data={(data || {}).lineData || []} />
       <Grid container item md={12}>
@@ -104,7 +114,7 @@ export default function NewEconomicReport(props) {
                   variant="h5"
                   component="h2"
                   align="center"
-                  style={numberStyle}
+                  style={{ fontSize: 14, marginTop: 5, fontWeight: "bold" }}
                 >
                   Ranking de Consumo
                 </Typography>
@@ -127,45 +137,3 @@ export default function NewEconomicReport(props) {
     </Grid>
   );
 }
-
-const DividedCard = ({ above, below, hasNumber, hasColors }) => (
-  <Grid item md={12} style={{ margin: "0px" }}>
-    <Card raised>
-      <CardContent>
-        <Typography
-          align="center"
-          variant="h3"
-          gutterBottom
-          style={{ ...titleStyle, ...(hasColors ? colorRed : null) }}
-        >
-          {above}
-        </Typography>
-        <Divider />
-        {hasNumber ? (
-          <Typography align="center" variant="h3" style={numberStyle}>
-            {below}
-          </Typography>
-        ) : (
-          <Typography
-            align="center"
-            variant="h3"
-            style={{ ...titleStyle, ...(hasColors ? colorGreen : null) }}
-          >
-            {below}
-          </Typography>
-        )}
-      </CardContent>
-    </Card>
-  </Grid>
-);
-
-const numberStyle = {
-  fontSize: 20,
-  marginTop: 10,
-  fontWeight: "bold",
-};
-
-const colorGreen = { color: "#4caf50", fontWeight: "bold" };
-const colorRed = { color: "#f44336", fontWeight: "bold" };
-
-const titleStyle = { fontSize: 18, marginTop: 10 };

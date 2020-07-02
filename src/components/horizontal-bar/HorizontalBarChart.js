@@ -13,7 +13,7 @@ import { formatToUnits, formatToAbbreviation } from "../../utils/index";
 const borderStyle = (theme) => [[1, "solid", theme.palette.divider]];
 const useStyles = makeStyles((theme) => ({
   container: {
-    height: "450px",
+    height: 250,
   },
   card: { minWidth: "100%" },
   bold: { fontWeight: "bold" },

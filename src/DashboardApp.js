@@ -144,6 +144,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     backgroundColor: theme.palette.common.white,
+    minHeight: 26,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -166,6 +167,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     color: "white",
+    minHeight: 26,
   },
   company: {
     color: theme.palette.primary.main,
@@ -210,7 +212,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
+    minHeight: 30,
   },
   content: {
     flexGrow: 1,

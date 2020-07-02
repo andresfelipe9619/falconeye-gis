@@ -181,81 +181,83 @@ export default function Sidebar({
             <DataBox text="Ubicaciones" number={maintenances.length} />
             <DataBox text="Asistencias" number={totalOrders} />
           </Grid>
-          <Divider variant="middle" />
-          <br />
           {!isTechnicalRange && (
-            <Grid
-              item
-              md={12}
-              container
-              spacing={2}
-              className={classes.fieldset}
-            >
+            <>
+              <Divider variant="middle" />
+              <br />
               <Grid
                 item
-                md={6}
+                md={12}
                 container
-                direction="column"
-                className={classes.leftBox}
+                spacing={2}
+                className={classes.fieldset}
               >
-                <DataBox
-                  small
-                  currency
-                  text="Correctivos"
-                  style={{
-                    color: currentLayerColors.corrective,
-                  }}
-                  number={totalCorrective}
-                />
-                <DataBox
-                  small
-                  currency
-                  text="Ingeniería"
-                  number={totalEngineering}
-                  style={{
-                    color: currentLayerColors.engineering,
-                  }}
-                />
-                <DataBox
-                  small
-                  currency
-                  text="Preventivos"
-                  number={totalPreventive}
-                  style={{
-                    color: currentLayerColors.preventive,
-                  }}
-                />
+                <Grid
+                  item
+                  md={6}
+                  container
+                  direction="column"
+                  className={classes.leftBox}
+                >
+                  <DataBox
+                    small
+                    currency
+                    text="Correctivos"
+                    style={{
+                      color: currentLayerColors.corrective,
+                    }}
+                    number={totalCorrective}
+                  />
+                  <DataBox
+                    small
+                    currency
+                    text="Ingeniería"
+                    number={totalEngineering}
+                    style={{
+                      color: currentLayerColors.engineering,
+                    }}
+                  />
+                  <DataBox
+                    small
+                    currency
+                    text="Preventivos"
+                    number={totalPreventive}
+                    style={{
+                      color: currentLayerColors.preventive,
+                    }}
+                  />
+                </Grid>
+                <Grid item md={6} container direction="column">
+                  <DataBox
+                    small
+                    currency
+                    text="Equipos"
+                    number={totalEquipments}
+                    style={{
+                      color: currentLayerColors.equipment,
+                    }}
+                  />
+                  <DataBox
+                    small
+                    currency
+                    text="Materiales"
+                    number={totalMaterials}
+                    style={{
+                      color: currentLayerColors.materials,
+                    }}
+                  />
+                  <DataBox
+                    small
+                    currency
+                    style={{
+                      color: currentLayerColors.services,
+                    }}
+                    text="Servicios"
+                    number={totalServices}
+                  />
+                </Grid>
               </Grid>
-              <Grid item md={6} container direction="column">
-                <DataBox
-                  small
-                  currency
-                  text="Equipos"
-                  number={totalEquipments}
-                  style={{
-                    color: currentLayerColors.equipment,
-                  }}
-                />
-                <DataBox
-                  small
-                  currency
-                  text="Materiales"
-                  number={totalMaterials}
-                  style={{
-                    color: currentLayerColors.materials,
-                  }}
-                />
-                <DataBox
-                  small
-                  currency
-                  style={{
-                    color: currentLayerColors.services,
-                  }}
-                  text="Servicios"
-                  number={totalServices}
-                />
-              </Grid>
-            </Grid>
+            </>
           )}
           <br />
           {loading && <LinearProgress />}

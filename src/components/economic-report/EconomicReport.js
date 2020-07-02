@@ -41,8 +41,8 @@ export default function TecnicReport(props) {
   ];
   if (loading) return <LinearProgress />;
   return (
-    <Grid container spacing={3}>
-      <Grid container spacing={4} item md={12}>
+    <Grid container spacing={2}>
+      <Grid container spacing={2} item md={12}>
         {((data || {}).kpi || []).map(
           (
             { title, percentage, accumulated, currentValue, currentDate },
@@ -80,20 +80,15 @@ export default function TecnicReport(props) {
     </Grid>
   );
 }
-
+const font = { fontWeight: "bold", fontSize: 16 };
 const DividedCard = ({ below }) => (
   <Card raised>
     <CardContent>
-      <Typography
-        align="center"
-        style={{ fontWeight: "bold" }}
-        variant="h6"
-        gutterBottom
-      >
+      <Typography align="center" style={font} variant="h6">
         Ejecutado total
       </Typography>
       <Divider />
-      <Typography style={{ fontWeight: "bold" }} align="center" variant="h6">
+      <Typography style={font} align="center" variant="h6">
         {formatToUnits(below, 0)}
       </Typography>
     </CardContent>

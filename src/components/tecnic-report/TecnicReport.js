@@ -34,8 +34,8 @@ export default function TecnicReport(props) {
   ];
   if (loading) return <LinearProgress />;
   return (
-    <Grid container spacing={3}>
-      <Grid container spacing={6} item md={12}>
+    <Grid container spacing={1}>
+      <Grid container spacing={2} item md={12}>
         {(data.kpi || []).map(
           (
             { title, percentage, accumulated, currentValue, currentDate },
@@ -57,8 +57,10 @@ export default function TecnicReport(props) {
         )}
       </Grid>
       <TecnicChart data={(data || {}).lineData || []} />
-      <Grid container item md={8} alignItems="center" justify="center">
-        <MostVisitedCard data={data.mostVisited || []} />
+      <Grid container item md={12} alignItems="center" justify="center">
+        <Grid container item md={8}>
+          <MostVisitedCard data={data.mostVisited || []} />
+        </Grid>
       </Grid>
     </Grid>
   );

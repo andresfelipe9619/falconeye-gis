@@ -6,7 +6,7 @@ import { formatToUnits, formatToAbbreviation } from "../../utils";
 
 const useStyles = makeStyles(() => ({
   container: {
-    height: "350px",
+    height: 250,
   },
   card: { minWidth: "100%" },
   bold: { fontWeight: "bold" },
@@ -22,7 +22,7 @@ export default function AssistsRanking({ data, color, keys, title, economic }) {
           data={data}
           keys={keys}
           indexBy="id"
-          margin={{ top: 5, right: 10, bottom: 80, left: 40 }}
+          margin={{ top: 5, right: 10, bottom: 30, left: 40 }}
           padding={0.1}
           innerPadding={4}
           colors={color}

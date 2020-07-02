@@ -24,7 +24,7 @@ export default function ReportCard({
             style={{ backgroundColor: titleColor }}
             className={classes.titleBox}
           >
-            <Typography align="left" gutterBottom className={classes.title}>
+            <Typography align="left" className={classes.title}>
               {title}
             </Typography>
           </Grid>
@@ -32,7 +32,6 @@ export default function ReportCard({
             item
             md={12}
             container
-            spacing={2}
             alignItems="center"
             className={classes.container}
           >

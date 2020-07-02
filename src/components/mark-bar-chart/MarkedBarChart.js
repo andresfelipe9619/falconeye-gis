@@ -6,7 +6,7 @@ import { formatToUnits, formatToAbbreviation } from "../../utils/index";
 
 const useStyles = makeStyles(() => ({
   container: {
-    height: "250px",
+    height: 230,
   },
   card: { minWidth: "100%" },
   bold: { fontWeight: "bold" },
@@ -17,7 +17,7 @@ const MarkedBarChart = ({ data, keys, title, color, media }) => {
   return (
     <Card raised className={classes.card}>
       <div style={{ marginTop: "10px" }}>
-        <Typography variant="h5" component="h1" align="center">
+        <Typography variant="h5" component="h2" align="center">
           {title}
         </Typography>
       </div>
@@ -28,7 +28,7 @@ const MarkedBarChart = ({ data, keys, title, color, media }) => {
             data={data}
             keys={keys}
             indexBy="date"
-            margin={{ top: 10, right: 30, bottom: 80, left: 50 }}
+            margin={{ top: 10, right: 30, bottom: 60, left: 50 }}
             padding={0.4}
             innerPadding={3}
             colors={color}
@@ -100,30 +100,30 @@ const MarkedBarChart = ({ data, keys, title, color, media }) => {
             labelSkipWidth={12}
             labelSkipHeight={12}
             labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-            legends={[
-              {
-                dataFrom: "keys",
-                anchor: "bottom",
-                direction: "row",
-                justify: false,
-                translateX: 15,
-                translateY: 75,
-                itemsSpacing: 2,
-                itemWidth: 100,
-                itemHeight: 20,
-                itemDirection: "left-to-right",
-                itemOpacity: 1,
-                symbolSize: 20,
-                // effects: [
-                //   {
-                //     on: "hover",
-                //     style: {
-                //       itemOpacity: 1,
-                //     },
-                //   },
-                // ],
-              },
-            ]}
+            // legends={[
+            //   {
+            //     dataFrom: "keys",
+            //     anchor: "bottom",
+            //     direction: "row",
+            //     justify: false,
+            //     translateX: 15,
+            //     translateY: 75,
+            //     itemsSpacing: 2,
+            //     itemWidth: 100,
+            //     itemHeight: 20,
+            //     itemDirection: "left-to-right",
+            //     itemOpacity: 1,
+            //     symbolSize: 20,
+            //     // effects: [
+            //     //   {
+            //     //     on: "hover",
+            //     //     style: {
+            //     //       itemOpacity: 1,
+            //     //     },
+            //     //   },
+            //     // ],
+            //   },
+            // ]}
             animate={false}
             motionStiffness={90}
             motionDamping={15}
